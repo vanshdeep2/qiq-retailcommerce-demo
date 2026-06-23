@@ -1,0 +1,28 @@
+@import './operations.css';
+
+.ledger-agent-link {
+  color: var(--dark);
+  font-weight: 600;
+  text-decoration: none;
+}
+
+button.ledger-agent-link {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.ledger-agent-link:hover {
+  color: var(--red);
+  text-decoration: underline;
+}
+
+button.chart-card {
+  display: block; width: 100%; text-align: left; font-family: inherit;
+  color: inherit;
+}
+.chart-card.no-click { cursor: default; }
+.chart-card.no-click:hover { border-color: var(--border); box-shadow: 0 1px 4px rgba(26,26,46,0.04); }
