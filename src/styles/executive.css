@@ -125,7 +125,7 @@
 
 .ltv-section-head {
   display: flex; align-items: flex-start; justify-content: space-between; gap: 12px;
-  margin: -8px 0 16px;
+  margin: 10px 0 16px;
 }
 .ltv-section-sublabel { margin: 0; flex: 1; }
 .ltv-assumptions-cta { flex-shrink: 0; white-space: nowrap; }

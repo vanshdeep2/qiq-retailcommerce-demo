@@ -62,7 +62,7 @@ export default function MerchantLtvSection({ ltv, onOpenSettings }) {
                 <div key={line.key} className="leg-item">
                   <span className="leg-dot" style={{ background: line.dotColor }} />
                   <span className="leg-label">{line.legendLabel}</span>
-                  <span className="leg-val val-red">{fmtDonutCentre(ltv[line.annualKey])}</span>
+                  <span className="leg-val val-red">{fmtDonutCentre(ltv[line.key])}</span>
                 </div>
               ))}
               <div className="leg-divider" />
@@ -92,7 +92,7 @@ export default function MerchantLtvSection({ ltv, onOpenSettings }) {
                 <div key={line.key} className="leg-item">
                   <span className="leg-dot" style={{ background: line.dotColor }} />
                   <span className="leg-label">{line.legendLabel}</span>
-                  <span className="leg-val val-green">{fmtDonutCentre(ltv[line.annualKey])}</span>
+                  <span className="leg-val val-green">{fmtDonutCentre(ltv[line.key])}</span>
                 </div>
               ))}
               <div className="leg-divider" />
