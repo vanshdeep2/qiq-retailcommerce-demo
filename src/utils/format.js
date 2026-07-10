@@ -1,4 +1,5 @@
 export function formatAht(seconds) {
+  if (!Number.isFinite(seconds)) return '—'
   const s = Math.round(seconds)
   const m = Math.floor(s / 60)
   const r = s % 60
