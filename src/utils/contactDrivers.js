@@ -1,9 +1,12 @@
 import { DRIVER_TAXONOMY } from '../data/contactDriverTaxonomy'
 
-function avgMetric(records, predicate) {
-  const subset = predicate ? records.filter(predicate) : records
-  if (!subset.length) return 0
-  return subset.reduce((s, r) => s + r, 0) / subset.length
+function avgMetric(records, getValue) {
+  if (!records.length) return 0
+  const values = getValue
+    ? records.map(getValue).filter((v) => typeof v === 'number' && !Number.isNaN(v))
+    : records
+  if (!values.length) return 0
+  return values.reduce((sum, v) => sum + v, 0) / values.length
 }
 
 function pctTrue(records, field) {
