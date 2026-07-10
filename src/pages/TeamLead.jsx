@@ -4,10 +4,12 @@ import AgentTlModal from '../components/AgentTlModal'
 import Nav from '../components/Nav'
 import FlowBar from '../components/FlowBar'
 import HealthStatCard from '../components/HealthStatCard'
+import MetricInsightDrawer, { buildAlertAgentInsight } from '../components/MetricInsightDrawer'
 import LedgerTable from '../components/LedgerTable'
-import DrawerShell from '../components/DrawerShell'
+import ModalShell from '../components/ModalShell'
 import SparkAgentCard from '../components/SparkAgentCard'
 import { CALLS_PILL, LIVE_LABEL } from '../data/executiveConstants'
+import { COACHING_TLS } from '../data/coachingHierarchy'
 import { SPARK_DATA, SPARK_PREVIEW_SLUGS } from '../data/agents'
 import {
   ALERT_AGENTS,
@@ -23,6 +25,8 @@ import '../styles/teamlead.css'
 
 export default function TeamLead() {
   const navigate = useNavigate()
+  const [insightMetric, setInsightMetric] = useState(null)
+  const [insightOverrides, setInsightOverrides] = useState(null)
   const [agentsDrawerOpen, setAgentsDrawerOpen] = useState(false)
   const [agentTlModalOpen, setAgentTlModalOpen] = useState(false)
   const [agentTlModalSlug, setAgentTlModalSlug] = useState(null)
@@ -89,8 +93,30 @@ export default function TeamLead() {
 
         <div className="connector">Team Health Summary</div>
         <div className="coaching-health">
-          {TEAM_HEALTH_STATS.map((stat) => (
-            <HealthStatCard key={stat.label} {...stat} />
+          {TEAM_HEALTH_STATS.map((stat, i) => (
+            <HealthStatCard
+              key={stat.label}
+              {...stat}
+              onClick={() => setInsightMetric(['tl-health-qa', 'tl-health-cf', 'tl-health-improving', 'tl-health-action'][i])}
+            />
+          ))}
+        </div>
+
+        <div className="connector">TL Coaching Load Comparison</div>
+        <p className="section-sublabel">
+          Formal + micro coaching actions deployed · Returns TL carries the highest load this period
+        </p>
+        <div className="coaching-load-strip">
+          {COACHING_TLS.map((tl) => (
+            <div
+              key={tl.id}
+              className={`coaching-load-card ${tl.id === 'kagiso' ? 'coaching-load-highlight' : ''}`}
+            >
+              <div className="coaching-load-name">{tl.name}</div>
+              <div className="coaching-load-team">{tl.team}</div>
+              <div className="coaching-load-value">{tl.deployed}</div>
+              <div className="coaching-load-sub">actions deployed</div>
+            </div>
           ))}
         </div>
 
@@ -117,11 +143,17 @@ export default function TeamLead() {
         <p className="section-sublabel">QiQ-flagged agents requiring team leader action this week</p>
         <div className="alert-agent-grid">
           {ALERT_AGENTS.map((agent) => (
-            <div key={agent.slug} className="alert-agent-card">
+            <button
+              key={agent.slug}
+              type="button"
+              className="alert-agent-card clickable-card"
+              onClick={() => {
+                setInsightMetric('tl-alert-agent')
+                setInsightOverrides(buildAlertAgentInsight(agent))
+              }}
+            >
               <div className="alert-agent-top">
-                <Link to={`/agent/${agent.slug}`} className="alert-agent-name">
-                  {agent.name}
-                </Link>
+                <span className="alert-agent-name">{agent.name}</span>
                 <span className={`badge ${agent.badgeClass}`}>{agent.status}</span>
               </div>
               <div className="alert-agent-metrics">{agent.metrics}</div>
@@ -129,7 +161,8 @@ export default function TeamLead() {
               <p className="alert-agent-action">
                 <strong>Recommended action:</strong> {agent.action}
               </p>
-            </div>
+              <div className="ckp-drill">Details →</div>
+            </button>
           ))}
         </div>
 
@@ -162,7 +195,12 @@ export default function TeamLead() {
             summary={COACHING_QUEUE_SUMMARY}
             rows={COACHING_QUEUE.map((row) => (
               <tr key={row.agent + row.topic}>
-                <td>{row.agent}</td>
+                <td>
+                  {row.agent}
+                  {row.w5Cohort && (
+                    <span className="badge badge-navy w5-cohort-badge">W5 cohort</span>
+                  )}
+                </td>
                 <td>{row.topic}</td>
                 <td>{row.source}</td>
                 <td>{row.deployed}</td>
@@ -223,16 +261,27 @@ export default function TeamLead() {
         <FlowBar activePage="teamlead" />
       </div>
 
-      <DrawerShell
+      <ModalShell
         open={agentsDrawerOpen}
         onClose={() => setAgentsDrawerOpen(false)}
         title="Quality Score Trends · All Agents"
         subtitle="8 weeks · Click an agent to open coaching view"
+        size="lg"
       >
         {SPARK_DATA.map((agent) => (
           <SparkAgentCard key={agent.slug} agent={agent} variant="drawer" />
         ))}
-      </DrawerShell>
+      </ModalShell>
+
+      <MetricInsightDrawer
+        open={Boolean(insightMetric)}
+        onClose={() => {
+          setInsightMetric(null)
+          setInsightOverrides(null)
+        }}
+        metricId={insightMetric}
+        overrides={insightOverrides}
+      />
 
       <AgentTlModal
         open={agentTlModalOpen}

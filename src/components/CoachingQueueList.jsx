@@ -3,13 +3,13 @@ import { buildCoachingQueue } from '../utils/coachingQueue'
 import { formatDate } from '../utils/format'
 import '../styles/agent.css'
 
-export default function CoachingQueueList({ coaching, idPrefix = 'queue', compact = false }) {
+export default function CoachingQueueList({ coaching, microLog, idPrefix = 'queue', compact = false }) {
   const [queueOpen, setQueueOpen] = useState({})
-  const coachingQueue = useMemo(() => buildCoachingQueue(coaching), [coaching])
+  const coachingQueue = useMemo(() => buildCoachingQueue(coaching, microLog), [coaching, microLog])
 
   useEffect(() => {
     setQueueOpen({})
-  }, [idPrefix, coaching])
+  }, [idPrefix, coaching, microLog])
 
   if (!coachingQueue.length) {
     return <p className="coaching-queue-empty">No coaching sessions for this agent yet.</p>

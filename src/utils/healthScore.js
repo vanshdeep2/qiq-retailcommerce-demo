@@ -13,7 +13,7 @@ export function computeHealthScore(targetAht) {
   const fcrScore = Math.min(100, FCR)
   const erScore = Math.min(100, (ER_TARGET / ESC_RATE) * 100)
   const ahtScore = Math.min(100, (targetAht / ACTUAL_AHT) * 100)
-  const trScore = TR_RATE <= 0 ? 100 : Math.min(100, ((TR_TARGET - TR_RATE) / TR_TARGET) * 100)
+  const trScore = TR_RATE <= 0 ? 100 : Math.max(0, Math.min(100, ((TR_TARGET - TR_RATE) / TR_TARGET) * 100))
   const rcrScore = Math.min(100, Math.max(0, (1 - RCR_RATE / RCR_TARGET) * 100))
 
   const health = Math.round(

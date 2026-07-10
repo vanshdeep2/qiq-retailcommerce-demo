@@ -1,6 +1,6 @@
 export const TEAM_HEALTH_STATS = [
   { label: 'Team QA Score', value: '78.4', valueClass: 'val-amber', sub: 'Avg quality score · Week 8' },
-  { label: 'Critical Failures', value: '9', valueClass: 'val-amber', sub: 'This week · Down from 27 in week 4' },
+  { label: 'Critical Failures', value: '41', valueClass: 'val-amber', sub: 'This week · Down from 123 in week 4' },
   { label: 'Agents Improving', value: '7/10', valueClass: 'val-green', sub: 'Returns FCR up vs week 1' },
   { label: 'TL Action Required', value: '2', valueClass: 'val-amber', sub: 'Formal coaching follow-ups open' },
 ]
@@ -42,7 +42,7 @@ export const ALERT_AGENTS = [
     name: 'Lerato Nkosi',
     status: 'On Track',
     badgeClass: 'badge-green',
-    metrics: 'Returns FCR: 82% · PA: 82% · CF total: 0 · RCR: 12%',
+    metrics: 'Returns FCR: 82% · PA: 82% · CF total: 1 · RCR: 12%',
     insight: 'Strong post-coaching recovery after W5 formal session. Micro coaching triggers down from daily to twice weekly.',
     action: 'Maintain current trajectory. Consider for peer coaching support role on refund confirmation protocol.',
   },
@@ -51,7 +51,7 @@ export const ALERT_AGENTS = [
     name: 'Ayanda Mbeki',
     status: 'On Track',
     badgeClass: 'badge-green',
-    metrics: 'Returns FCR: 78% · PA: 80% · CF total: 0 · RCR: 14%',
+    metrics: 'Returns FCR: 78% · PA: 80% · CF total: 1 · RCR: 14%',
     insight: 'Verification compliance improved dramatically after W5 formal coaching. Returns handling now above team average.',
     action: 'Share verification workflow with Sipho Khumalo in peer session.',
   },
@@ -71,15 +71,16 @@ export const MICRO_COACHING_QUEUE = [
 export const MICRO_COACHING_SUMMARY = [
   { text: '8 micro sessions today', className: 'summary-chip' },
   { text: '4 completed', className: 'summary-chip summary-chip-green' },
-  { text: '3 in progress', className: 'summary-chip summary-chip-amber' },
+  { text: '2 in progress', className: 'summary-chip summary-chip-amber' },
+  { text: '2 new', className: 'summary-chip summary-chip-amber' },
   { text: '1 TL escalation', className: 'summary-chip summary-chip-amber' },
 ]
 
 export const COACHING_QUEUE = [
-  { agent: 'Lerato Nkosi', topic: 'Refund Confirmation Protocol', source: '7+ days micro coaching · no resolution confirmation', deployed: 'Week 5', status: 'Completed', badgeClass: 'badge-green', outcome: 'Returns FCR 25% → 82%; formal session logged with positive outcome' },
-  { agent: 'Pieter Botha', topic: 'Returns Policy Accuracy', source: '7+ days micro · policy misquote pattern', deployed: 'Week 5', status: 'Completed', badgeClass: 'badge-green', outcome: 'Zero policy misquotes W6-W8; formal outcome: behaviours corrected' },
-  { agent: 'Busisiwe Maseko', topic: 'Resolution & Close', source: '7+ days micro · refund close without confirmation', deployed: 'Week 5', status: 'In Progress', badgeClass: 'badge-amber', outcome: 'FCR improving; documentation pillar still below target' },
-  { agent: 'Ayanda Mbeki', topic: 'Identity Verification on Returns', source: '7+ days micro · verification skipped', deployed: 'Week 5', status: 'Completed', badgeClass: 'badge-green', outcome: 'Verification 100% W7-W8; formal outcome: passed' },
+  { agent: 'Lerato Nkosi', topic: 'Refund Confirmation Protocol', source: '7+ days micro coaching · no resolution confirmation', deployed: 'Week 5', status: 'Completed', badgeClass: 'badge-green', outcome: 'Returns FCR 38% → 82%; formal session logged with positive outcome', w5Cohort: true },
+  { agent: 'Pieter Botha', topic: 'Returns Policy Accuracy', source: '7+ days micro · policy misquote pattern', deployed: 'Week 5', status: 'Completed', badgeClass: 'badge-green', outcome: 'Zero policy misquotes W6-W8; formal outcome: behaviours corrected', w5Cohort: true },
+  { agent: 'Busisiwe Maseko', topic: 'Resolution & Close', source: '7+ days micro · refund close without confirmation', deployed: 'Week 5', status: 'In Progress', badgeClass: 'badge-amber', outcome: 'FCR improving; documentation pillar still below target', w5Cohort: true },
+  { agent: 'Ayanda Mbeki', topic: 'Identity Verification on Returns', source: '7+ days micro · verification skipped', deployed: 'Week 5', status: 'Completed', badgeClass: 'badge-green', outcome: 'Verification 100% W7-W8; formal outcome: passed', w5Cohort: true },
   { agent: 'Zanele Ndlovu', topic: 'Escalation Criteria', source: 'Critical failure · escalation avoidance', deployed: 'Week 6', status: 'Open', badgeClass: 'badge-red', outcome: 'Second formal session scheduled - FCR still below 40%' },
   { agent: 'Thabo van der Merwe', topic: 'Handle Efficiency on Exchanges', source: 'Ops cluster · AHT 420s on sizing', deployed: 'Week 5', status: 'In Progress', badgeClass: 'badge-amber', outcome: 'AHT reducing week on week' },
   { agent: 'Michael Naidoo', topic: 'Benchmark', source: '-', deployed: '-', status: 'Benchmark', badgeClass: 'badge-navy', outcome: '84% Returns FCR - peer coaching source' },
@@ -94,9 +95,9 @@ export const COACHING_QUEUE_SUMMARY = [
 ]
 
 export const FLAGGED_CALLS = [
-  { callId: 'CL-RX-CF0001', agent: 'Pieter Botha', date: '2026-04-14', category: 'Returns & Refunds', flagReason: 'Critical failure · Policy misquote · 14-day window stated (30-day policy)', flagClass: 'flag-badge-critical', qaScore: '0', qaClass: 'val-red' },
-  { callId: 'CL-RX-CF0002', agent: 'Lerato Nkosi', date: '2026-04-22', category: 'Returns & Refunds', flagReason: 'Critical failure · No resolution confirmation · Refund status not confirmed', flagClass: 'flag-badge-critical', qaScore: '0', qaClass: 'val-red' },
-  { callId: 'CL-RX-CF0003', agent: 'Ayanda Mbeki', date: '2026-05-01', category: 'Returns & Refunds', flagReason: 'Critical failure · Verification failure · Return processed without ID check', flagClass: 'flag-badge-critical', qaScore: '0', qaClass: 'val-red' },
-  { callId: 'CL-RX-CF0004', agent: 'Zanele Ndlovu', date: '2026-05-08', category: 'Returns & Refunds', flagReason: 'Critical failure · Escalation avoidance · Third contact from same customer', flagClass: 'flag-badge-critical', qaScore: '0', qaClass: 'val-red' },
-  { callId: 'CL-RX-CF0005', agent: 'Busisiwe Maseko', date: '2026-04-18', category: 'Returns & Refunds', flagReason: 'Critical failure · No case notes · Repeat contact with no prior documentation', flagClass: 'flag-badge-critical', qaScore: '0', qaClass: 'val-red' },
+  { callId: 'CL-RX-CF0001', agent: 'Pieter Botha', date: '2026-04-14', category: 'Orders & Transactions · Returns & Exchanges', flagReason: 'Critical failure · Policy misquote · 14-day window stated (30-day policy)', flagClass: 'flag-badge-critical', qaScore: '0', qaClass: 'val-red' },
+  { callId: 'CL-RX-CF0002', agent: 'Lerato Nkosi', date: '2026-04-22', category: 'Orders & Transactions · Returns & Exchanges', flagReason: 'Critical failure · No resolution confirmation · Refund status not confirmed', flagClass: 'flag-badge-critical', qaScore: '0', qaClass: 'val-red' },
+  { callId: 'CL-RX-CF0003', agent: 'Ayanda Mbeki', date: '2026-05-01', category: 'Orders & Transactions · Returns & Exchanges', flagReason: 'Critical failure · Verification failure · Return processed without ID check', flagClass: 'flag-badge-critical', qaScore: '0', qaClass: 'val-red' },
+  { callId: 'CL-RX-CF0004', agent: 'Zanele Ndlovu', date: '2026-05-08', category: 'Orders & Transactions · Returns & Exchanges', flagReason: 'Critical failure · Escalation avoidance · Third contact from same customer', flagClass: 'flag-badge-critical', qaScore: '0', qaClass: 'val-red' },
+  { callId: 'CL-RX-CF0005', agent: 'Busisiwe Maseko', date: '2026-04-18', category: 'Orders & Transactions · Returns & Exchanges', flagReason: 'Critical failure · No case notes · Repeat contact with no prior documentation', flagClass: 'flag-badge-critical', qaScore: '0', qaClass: 'val-red' },
 ]

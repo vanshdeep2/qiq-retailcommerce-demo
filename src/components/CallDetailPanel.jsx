@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { AGENTS } from '../data/agents'
-import { AGENT_SLUGS, PASS_FAIL_QS, Q_NAMES } from '../data/contactSearchConstants'
+import { AGENT_SLUGS, formatCfCategory, PASS_FAIL_QS, Q_NAMES } from '../data/contactSearchConstants'
 import {
   getMetBadge,
   getSectionBarClass,
@@ -64,7 +64,33 @@ function SummaryTab({ call }) {
         <span className="detail-stat-chip">
           NPS: {call.predicted_nps_score ?? '-'}
         </span>
+        {call.is_repeat_contact && (
+          <span className="detail-stat-chip detail-stat-chip-amber">Repeat contact</span>
+        )}
+        {call.critical_failure && (
+          <span className="detail-stat-chip detail-stat-chip-red">
+            CF · {formatCfCategory(call.critical_failure_category)}
+          </span>
+        )}
       </div>
+
+      {(call.micro_coaching_action || call.formal_coaching_flag) && (
+        <div className="detail-section detail-coaching-section">
+          <div className="detail-section-title">QiQ Coaching</div>
+          {call.micro_coaching_action && (
+            <div className="detail-coaching-nudge">
+              <span className="detail-coaching-label">Micro nudge</span>
+              <p>{call.micro_coaching_action}</p>
+            </div>
+          )}
+          {call.formal_coaching_flag && (
+            <div className="detail-coaching-formal">
+              <span className="coach-badge coach-badge-amber">Formal coaching flag</span>
+              <p>Post-W5 formal coaching cohort — this contact triggered a logged follow-up for your team lead.</p>
+            </div>
+          )}
+        </div>
+      )}
     </div>
   )
 }
@@ -224,7 +250,7 @@ export default function CallDetailPanel({ call, activeTab, setActiveTab, hideHea
           <div>
             <div className="detail-call-id">{call.call_id}</div>
             <div className="detail-call-meta">
-              {call.merchant_name} · Order {call.merchant_contact} · {call.agent_name} · {call.call_date} · {call.call_category}
+              {call.merchant_name} · Order {call.merchant_contact} · {call.agent_name} · {call.call_date} · {call.call_category} · {call.call_subcategory}
             </div>
           </div>
         </div>

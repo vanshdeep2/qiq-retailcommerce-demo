@@ -12,7 +12,7 @@ export default function SparkAgentCard({ agent, variant = 'preview' }) {
       <Link to={`/agent/${agent.slug}`} className="drawer-agent-block" title={`Open ${agent.name}`}>
         <div className="drawer-agent-top">
           <span className="drawer-agent-name">{agent.name}</span>
-          <span className={`drawer-agent-score ${scoreCls}`}>{agent.w5.toFixed(1)}</span>
+          <span className={`drawer-agent-score ${scoreCls}`}>{agent.w8.toFixed(1)}</span>
         </div>
         <div className="drawer-agent-meta">{sparkDeltaText(agent.series)}</div>
         <div className="drawer-chart-wrap">
@@ -27,7 +27,7 @@ export default function SparkAgentCard({ agent, variant = 'preview' }) {
     <Link to={`/agent/${agent.slug}`} className="spark-card" title={`Open ${agent.name}`}>
       <div className="spark-card-top">
         <span className="spark-card-name">{agent.name}</span>
-        <span className={`spark-card-score ${scoreCls}`}>{agent.w5.toFixed(1)}</span>
+        <span className={`spark-card-score ${scoreCls}`}>{agent.w8.toFixed(1)}</span>
       </div>
       <div className="spark-card-meta">{sparkDeltaText(agent.series)}</div>
       <div className="spark-chart-wrap">

@@ -32,7 +32,7 @@ export default function CallDetailModal({ call, activeTab, setActiveTab, onClose
           <div>
             <div id="call-modal-title" className="call-modal-title">{call.call_id}</div>
             <div className="call-modal-subtitle">
-              {call.agent_name} · {call.call_date} · {call.call_category}
+              {call.agent_name} · {call.call_date} · {call.call_category} · {call.call_subcategory}
             </div>
           </div>
           <button

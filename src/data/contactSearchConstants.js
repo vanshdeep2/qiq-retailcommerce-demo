@@ -55,6 +55,19 @@ export const WEEK_BOUNDARIES = [
   { start: '2026-05-25', end: '2026-05-31', label: 'W8' },
 ]
 
+export const CF_CATEGORY_LABELS = {
+  policy_misquote: 'Policy misquote',
+  no_resolution_confirmation: 'No resolution confirmation',
+  no_case_notes: 'No case notes',
+  escalation_avoidance: 'Escalation avoidance',
+  verification_failure: 'Verification failure',
+}
+
+export function formatCfCategory(categoryId) {
+  if (!categoryId) return 'Critical failure'
+  return CF_CATEGORY_LABELS[categoryId] || categoryId.replace(/_/g, ' ')
+}
+
 export const CF_QUICK_LINKS = FLAGGED_CALLS.filter((c) => c.callId.startsWith('CL-RX-CF')).map((c) => ({
   callId: c.callId,
   agent: c.agent,

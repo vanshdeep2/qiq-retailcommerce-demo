@@ -3,7 +3,7 @@ import { useSearchParams } from 'react-router-dom'
 import Nav from '../components/Nav'
 import CallDetailModal from '../components/CallDetailModal'
 import { CALLS_PILL, LIVE_LABEL } from '../data/executiveConstants'
-import { CF_QUICK_LINKS, DEFAULT_FILTERS, WEEK_BOUNDARIES } from '../data/contactSearchConstants'
+import { CF_QUICK_LINKS, DEFAULT_FILTERS, formatCfCategory, WEEK_BOUNDARIES } from '../data/contactSearchConstants'
 import {
   filterCalls,
   formatQaScoreDisplay,
@@ -41,6 +41,7 @@ export default function ContactSearch() {
   const [expandedCall, setExpandedCall] = useState(null)
   const [activeTab, setActiveTab] = useState('summary')
   const [visibleCount, setVisibleCount] = useState(50)
+  const [callNotFound, setCallNotFound] = useState(null)
 
   useEffect(() => {
     fetch('/data/contact_search_data.json')
@@ -114,8 +115,12 @@ export default function ContactSearch() {
 
   useEffect(() => {
     if (loading || !prefilledCall || prefilledHandled.current) return
-    if (!callIdIndex.has(prefilledCall)) return
     prefilledHandled.current = true
+    if (!callIdIndex.has(prefilledCall)) {
+      setCallNotFound(prefilledCall)
+      return
+    }
+    setCallNotFound(null)
     setExpandedCall(prefilledCall)
     setActiveTab('summary')
     const idx = filteredCalls.findIndex((c) => c.call_id === prefilledCall)
@@ -186,7 +191,7 @@ export default function ContactSearch() {
         <div className="briefing-kicker">QiQ Contact Intelligence</div>
         <h1 className="briefing-title">Contact Search</h1>
         <div className="briefing-subtitle">
-          QA analysts &amp; team leaders · 2,200 customer contacts · Search by order, customer, or contact reason
+          QA analysts &amp; team leaders · 10,000 customer contacts · Search by order, customer, or contact reason
         </div>
 
         <div className="connector">Search &amp; Filter</div>
@@ -214,7 +219,7 @@ export default function ContactSearch() {
           <div className="search-field">
             <label htmlFor="filter-category">Queue</label>
             <select id="filter-category" value={filters.category} onChange={updateFilter('category')}>
-              <option value="all">All queues</option>
+              <option value="all">All categories</option>
               {categoryOptions.map((c) => (
                 <option key={c} value={c}>{c}</option>
               ))}
@@ -290,10 +295,16 @@ export default function ContactSearch() {
 
         <div className="connector">Results</div>
 
+        {callNotFound && (
+          <div className="search-call-not-found" role="alert">
+            Call <strong>{callNotFound}</strong> was not found in this dataset. Check the ID or browse featured critical failures above.
+          </div>
+        )}
+
         {loading && (
           <div className="search-loading">
             <div className="search-spinner" />
-            Loading 2,200 contacts…
+            Loading 10,000 contacts…
           </div>
         )}
 
@@ -354,7 +365,7 @@ export default function ContactSearch() {
                         <td>
                           {call.critical_failure ? (
                             <span className="cf-badge">
-                              CF · {call.critical_failure_category || 'Critical'}
+                              CF · {formatCfCategory(call.critical_failure_category)}
                             </span>
                           ) : (
                             '-'

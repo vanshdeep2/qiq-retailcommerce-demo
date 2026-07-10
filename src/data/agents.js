@@ -21,7 +21,7 @@ export const AGENTS = {
   },
   'lerato-nkosi': {
     name: 'Lerato Nkosi', role: 'Support Agent', team: 'Kagiso de Villiers',
-    qa_w5: 88.0, qa_w1: 58.3, pa: 82.0, rr: 82.0, cf: 0,
+    qa_w5: 88.0, qa_w1: 58.3, pa: 82.0, rr: 82.0, cf: 1,
     qa_series: [58.3, 55.0, 52.8, 54.2, 62.0, 78.5, 85.0, 88.0], status: 'On Track',
     insight: 'Lerato showed dramatic improvement after W5 formal coaching on refund confirmation. Returns FCR moved from 25% in W1-W4 to 82% by W8. Micro coaching triggers have dropped from daily to twice weekly.',
     coaching: [
@@ -39,6 +39,14 @@ export const AGENTS = {
       { from: 'Lerato Nkosi', role: 'Agent', date: '2026-05-06', message: 'Understood. I\'ve reviewed the returns close module and will apply the confirmation script on every call from today.' },
       { from: 'Kagiso de Villiers', role: 'Team Lead', date: '2026-05-22', message: 'Checked your returns calls this week - strong improvement. FCR at 82%. Keep it going.' },
     ],
+    micro_coaching_log: [
+      { date: '2026-05-29', topic: 'Refund confirmation on close', status: 'Completed', badgeClass: 'badge-green', type: 'development', content: 'QiQ nudge: Confirm refund amount and 3-5 day posting timeline before every close.', evidence: 'Applied on 4/4 returns calls today.' },
+      { date: '2026-05-27', topic: 'Resolution confirmation script', status: 'Completed', badgeClass: 'badge-green', type: 'development', content: 'Use the close script: amount, timeline, and system confirmation on every refund.', evidence: '2 contacts missed timeline yesterday — corrected today.' },
+      { date: '2026-05-24', topic: 'Refund timeline reminder', status: 'Acknowledged', badgeClass: 'badge-green', type: 'development', content: 'State the 3-5 business day window even when the return is already processing.', evidence: 'Micro triggers down to twice weekly.' },
+      { date: '2026-05-20', topic: 'Post-formal coaching check-in', status: 'Completed', badgeClass: 'badge-green', type: 'strength', content: 'W5 formal session holding — FCR recovery visible in W7 data.', evidence: 'Returns FCR 38% W1-W4 → 82% W8.' },
+      { date: '2026-05-15', topic: 'Refund confirmation on close', status: 'In Progress', badgeClass: 'badge-amber', type: 'development', content: 'Missed confirmation on 2 of 6 returns calls — review CL-RX-CF0002 before next shift.', evidence: 'Formal coaching deployed Week 5.' },
+      { date: '2026-05-10', topic: 'Close without confirmation', status: 'New', badgeClass: 'badge-navy', type: 'development', content: 'QiQ flagged a returns contact closed without refund status confirmation.', evidence: '7+ days of micro coaching on same trigger.' },
+    ],
   },
   'pieter-botha': {
     name: 'Pieter Botha', role: 'Support Agent', team: 'Kagiso de Villiers',
@@ -53,6 +61,13 @@ export const AGENTS = {
     ],
     notes: [
       { from: 'Kagiso de Villiers', role: 'Team Lead', date: '2026-05-07', message: 'Pieter - formal coaching logged. Outcome: policy accuracy protocol committed. Review CL-RX-CF0001 as reference for what not to do.' },
+    ],
+    micro_coaching_log: [
+      { date: '2026-05-28', topic: 'Returns window accuracy', status: 'Completed', badgeClass: 'badge-green', type: 'development', content: 'QiQ nudge: Crestline policy is 30 days from delivery — keep the policy card visible.', evidence: 'Zero misquotes W6-W8.' },
+      { date: '2026-05-25', topic: 'Policy card review', status: 'Completed', badgeClass: 'badge-green', type: 'development', content: 'Quote 30-day window and delivery-date check on every returns call.', evidence: 'W2 CF (CL-RX-CF0001) not repeated.' },
+      { date: '2026-05-21', topic: 'Returns policy accuracy', status: 'Acknowledged', badgeClass: 'badge-green', type: 'development', content: 'Formal W5 session outcome holding — no policy misquotes this week.', evidence: 'QA 87.2 W8.' },
+      { date: '2026-05-17', topic: '30-day window confirmation', status: 'In Progress', badgeClass: 'badge-amber', type: 'development', content: 'State policy before processing any exception return.', evidence: 'Post-formal coaching Week 5.' },
+      { date: '2026-05-12', topic: 'Policy misquote pattern', status: 'New', badgeClass: 'badge-navy', type: 'development', content: 'QiQ flagged 14-day window stated — review Crestline Returns Policy module.', evidence: 'Critical failure CL-RX-CF0001.' },
     ],
   },
   'busisiwe-maseko': {
@@ -69,10 +84,17 @@ export const AGENTS = {
     notes: [
       { from: 'Kagiso de Villiers', role: 'Team Lead', date: '2026-05-08', message: 'Busisiwe - formal session outcome: in progress. FCR improving but documentation pillar still at 62%. Weekly check-in continues.' },
     ],
+    micro_coaching_log: [
+      { date: '2026-05-29', topic: 'Case notes before close', status: 'New', badgeClass: 'badge-amber', type: 'development', content: 'QiQ nudge: Link prior case and document action before closing repeat contacts.', evidence: '2 contacts closed without documentation today.' },
+      { date: '2026-05-27', topic: 'Documentation on repeat contacts', status: 'In Progress', badgeClass: 'badge-amber', type: 'development', content: 'Open previous case before resolving any callback on the same order.', evidence: 'Repeat contact CL-ORD-10012 had no prior link.' },
+      { date: '2026-05-24', topic: 'Resolution confirmation', status: 'Completed', badgeClass: 'badge-green', type: 'development', content: 'Refund confirmation improved since W5 formal session.', evidence: 'FCR climbing week on week.' },
+      { date: '2026-05-19', topic: 'Five-second close checklist', status: 'Acknowledged', badgeClass: 'badge-green', type: 'development', content: 'Issue, action, next step, case linked — before every close.', evidence: 'W5 cohort formal coaching.' },
+      { date: '2026-05-14', topic: 'No case notes', status: 'Completed', badgeClass: 'badge-green', type: 'development', content: 'Review CL-RX-CF0005 — repeat contact with no prior documentation.', evidence: 'Critical failure reference call.' },
+    ],
   },
   'ayanda-mbeki': {
     name: 'Ayanda Mbeki', role: 'Support Agent', team: 'Kagiso de Villiers',
-    qa_w5: 85.5, qa_w1: 55.0, pa: 80.0, rr: 78.0, cf: 0,
+    qa_w5: 85.5, qa_w1: 55.0, pa: 80.0, rr: 78.0, cf: 1,
     qa_series: [55.0, 52.5, 50.0, 53.0, 60.0, 78.0, 83.0, 85.5], status: 'On Track',
     insight: 'Ayanda skipped identity verification on a return in W4 (critical failure). W5 formal coaching on verification protocol produced 100% pass rate W7-W8 and Returns FCR of 78%.',
     coaching: [
@@ -83,6 +105,14 @@ export const AGENTS = {
     ],
     notes: [
       { from: 'Kagiso de Villiers', role: 'Team Lead', date: '2026-05-09', message: 'Ayanda - formal coaching outcome: passed. Verification compliance excellent this week. Share your checklist approach with Sipho.' },
+    ],
+    micro_coaching_log: [
+      { date: '2026-05-29', topic: 'Identity verification on returns', status: 'Completed', badgeClass: 'badge-green', type: 'development', content: 'QiQ nudge: Complete order number, email, and billing postcode before processing any return.', evidence: '100% verification pass rate W7-W8.' },
+      { date: '2026-05-26', topic: 'Verification checklist', status: 'Completed', badgeClass: 'badge-green', type: 'strength', content: 'Full verification on all 6 returns calls today — strong recovery from W4 CF.', evidence: 'CL-RX-CF0003 not repeated.' },
+      { date: '2026-05-22', topic: 'Returns verification protocol', status: 'Acknowledged', badgeClass: 'badge-green', type: 'development', content: 'Never skip ID check even when customer is frustrated.', evidence: 'W5 formal outcome: passed.' },
+      { date: '2026-05-18', topic: 'Verification before account access', status: 'In Progress', badgeClass: 'badge-amber', type: 'development', content: 'Walk through checklist before touching the account.', evidence: 'Post-W5 formal coaching.' },
+      { date: '2026-05-10', topic: 'Verification failure', status: 'New', badgeClass: 'badge-navy', type: 'development', content: 'QiQ flagged return processed without identity verification.', evidence: 'Critical failure CL-RX-CF0003.' },
+      { date: '2026-05-06', topic: 'W5 formal coaching prep', status: 'Completed', badgeClass: 'badge-green', type: 'development', content: 'Review verification module before formal session.', evidence: 'W5 cohort deployed.' },
     ],
   },
   'nomsa-dlamini': {
@@ -97,6 +127,13 @@ export const AGENTS = {
         lms: 'Documentation Accuracy - Repeat Contact Protocol' },
     ],
     notes: [],
+    micro_coaching_log: [
+      { date: '2026-05-28', topic: 'Documentation on repeat contacts', status: 'Completed', badgeClass: 'badge-green', type: 'development', content: 'QiQ nudge: Search order number for open cases before resolving callbacks.', evidence: '4/5 repeat contacts linked today.' },
+      { date: '2026-05-25', topic: 'Prior case reference', status: 'Completed', badgeClass: 'badge-green', type: 'development', content: 'State previous contact date when picking up a repeat issue.', evidence: 'Repeat rate down 8% this week.' },
+      { date: '2026-05-21', topic: 'Case linking habit', status: 'Acknowledged', badgeClass: 'badge-green', type: 'development', content: 'Link prior case before resolving any repeat contact.', evidence: 'QA 86.5 W8.' },
+      { date: '2026-05-17', topic: 'Repeat contact protocol', status: 'In Progress', badgeClass: 'badge-amber', type: 'development', content: 'One miss on refund status callback — open prior notes first.', evidence: 'Steady improvement W1-W8.' },
+      { date: '2026-05-12', topic: 'Documentation accuracy', status: 'New', badgeClass: 'badge-navy', type: 'development', content: 'QiQ flagged callback resolved without referencing prior case.', evidence: 'Micro coaching weekly.' },
+    ],
   },
   'zanele-ndlovu': {
     name: 'Zanele Ndlovu', role: 'Support Agent', team: 'Kagiso de Villiers',
@@ -112,6 +149,14 @@ export const AGENTS = {
     notes: [
       { from: 'Kagiso de Villiers', role: 'Team Lead', date: '2026-05-20', message: 'Zanele - second formal session scheduled for next Tuesday. Escalation avoidance is the priority. Review CL-RX-CF0004 before the session.' },
     ],
+    micro_coaching_log: [
+      { date: '2026-05-29', topic: 'Escalation criteria met', status: 'New', badgeClass: 'badge-red', type: 'development', content: 'QiQ nudge: Two contacts today met escalation criteria and were not escalated.', evidence: 'Third micro trigger this week — TL review.' },
+      { date: '2026-05-27', topic: 'Third contact escalation', status: 'In Progress', badgeClass: 'badge-red', type: 'development', content: 'When a customer has contacted three times, escalate immediately — do not attempt another front-line resolution.', evidence: 'CL-RX-CF0004 reference.' },
+      { date: '2026-05-24', topic: 'Escalation avoidance', status: 'New', badgeClass: 'badge-red', type: 'development', content: 'QiQ flagged escalation criteria met but not escalated.', evidence: 'Returns FCR still 34%.' },
+      { date: '2026-05-19', topic: 'Escalation script', status: 'Acknowledged', badgeClass: 'badge-amber', type: 'development', content: 'Use: "I am escalating this to our specialist team now — you will hear back within 24 hours."', evidence: 'Second formal session scheduled.' },
+      { date: '2026-05-14', topic: 'Escalation criteria review', status: 'In Progress', badgeClass: 'badge-amber', type: 'development', content: 'Review escalation module before Tuesday formal session.', evidence: '3 critical failures W1-W4.' },
+      { date: '2026-05-08', topic: 'Critical failure follow-up', status: 'New', badgeClass: 'badge-red', type: 'development', content: 'QiQ flagged third contact from same customer without escalation.', evidence: 'CL-RX-CF0004.' },
+    ],
   },
   'thabo-van-der-merwe': {
     name: 'Thabo van der Merwe', role: 'Support Agent', team: 'Kagiso de Villiers',
@@ -125,6 +170,13 @@ export const AGENTS = {
         lms: 'Sizing Exchange - Structured Workflow' },
     ],
     notes: [],
+    micro_coaching_log: [
+      { date: '2026-05-28', topic: 'Handle efficiency on exchanges', status: 'Completed', badgeClass: 'badge-green', type: 'development', content: 'QiQ nudge: Use exchange workflow checklist — AHT down 45s this week.', evidence: 'Exchange AHT 420s → 375s.' },
+      { date: '2026-05-24', topic: 'Structured exchange workflow', status: 'In Progress', badgeClass: 'badge-amber', type: 'development', content: 'Confirm size, check stock, initiate label, state timeline in order.', evidence: 'QA 82.0 W8.' },
+      { date: '2026-05-20', topic: 'Stock exception notes', status: 'Acknowledged', badgeClass: 'badge-green', type: 'development', content: 'Note stock exceptions in case before placing customer on hold.', evidence: 'Steady W1-W8 improvement.' },
+      { date: '2026-05-15', topic: 'Sizing exchange AHT', status: 'Completed', badgeClass: 'badge-green', type: 'development', content: 'Keep checklist visible on exchange calls.', evidence: 'Formal coaching Week 5.' },
+      { date: '2026-05-10', topic: 'Exchange workflow', status: 'New', badgeClass: 'badge-navy', type: 'development', content: 'QiQ flagged long handle time on sizing exchanges.', evidence: 'Ops cluster coaching.' },
+    ],
   },
   'janine-jacobs': {
     name: 'Janine Jacobs', role: 'Support Agent', team: 'Kagiso de Villiers',
@@ -138,10 +190,17 @@ export const AGENTS = {
         lms: 'Partial Refund Calculator - Crestline Tools' },
     ],
     notes: [],
+    micro_coaching_log: [
+      { date: '2026-05-29', topic: 'Partial refund calculation', status: 'In Progress', badgeClass: 'badge-amber', type: 'development', content: 'QiQ nudge: Open refund calculator before processing any partial refund dispute.', evidence: '3/4 dispute calls used calculator today.' },
+      { date: '2026-05-26', topic: 'Calculator tool usage', status: 'In Progress', badgeClass: 'badge-amber', type: 'development', content: 'Manual calculation led to customer callback — use Crestline calculator.', evidence: 'FCR climbing but below team avg.' },
+      { date: '2026-05-22', topic: 'Partial refund disputes', status: 'Acknowledged', badgeClass: 'badge-green', type: 'development', content: 'Read calculator result back to customer before processing.', evidence: 'Watch status — improving.' },
+      { date: '2026-05-17', topic: 'Restocking rules', status: 'Completed', badgeClass: 'badge-green', type: 'development', content: 'Review restocking rules in calculator module.', evidence: 'Formal process coaching W6.' },
+      { date: '2026-05-11', topic: 'Partial refund workflow', status: 'New', badgeClass: 'badge-navy', type: 'development', content: 'QiQ flagged manual calculation on dispute call.', evidence: 'Weekly micro coaching.' },
+    ],
   },
   'sipho-khumalo': {
     name: 'Sipho Khumalo', role: 'Support Agent', team: 'Kagiso de Villiers',
-    qa_w5: 75.0, qa_w1: 68.2, pa: 60.0, rr: 55.0, cf: 0,
+    qa_w5: 75.0, qa_w1: 68.2, pa: 60.0, rr: 55.0, cf: 1,
     qa_series: [68.2, 69.0, 70.5, 71.0, 72.0, 73.5, 74.0, 75.0], status: 'On Track',
     insight: 'Sipho is new to the returns queue and improving steadily with daily micro coaching. Below benchmark but trending in the right direction.',
     coaching: [
@@ -152,6 +211,14 @@ export const AGENTS = {
     ],
     notes: [
       { from: 'Kagiso de Villiers', role: 'Team Lead', date: '2026-05-21', message: 'Sipho - peer session with Michael confirmed for Thursday 10am. Focus on returns close and policy confirmation.' },
+    ],
+    micro_coaching_log: [
+      { date: '2026-05-29', topic: 'Return window confirmation', status: 'In Progress', badgeClass: 'badge-amber', type: 'development', content: 'QiQ nudge: State 30-day return window verbally on every returns call.', evidence: '2/5 calls included policy confirmation today.' },
+      { date: '2026-05-27', topic: '30-day policy verbal', status: 'In Progress', badgeClass: 'badge-amber', type: 'development', content: 'Confirm window before close even when customer does not ask.', evidence: 'Peer session with Michael Thursday.' },
+      { date: '2026-05-23', topic: 'Returns close protocol', status: 'Acknowledged', badgeClass: 'badge-green', type: 'development', content: 'Watch Michael\'s close flow in peer session.', evidence: 'QA 75.0 W8 — trending up.' },
+      { date: '2026-05-18', topic: 'Return window confirmation', status: 'New', badgeClass: 'badge-navy', type: 'development', content: 'QiQ flagged returns call without verbal 30-day policy confirmation.', evidence: 'Daily micro coaching.' },
+      { date: '2026-05-14', topic: 'Returns onboarding', status: 'Completed', badgeClass: 'badge-green', type: 'development', content: 'Complete Week 1-4 returns onboarding module.', evidence: 'New to returns queue W3.' },
+      { date: '2026-05-08', topic: 'Policy confirmation', status: 'In Progress', badgeClass: 'badge-amber', type: 'development', content: 'Quote 30-day window on every return before processing.', evidence: '1 CF this period on policy gap.' },
     ],
   },
 }
@@ -168,6 +235,6 @@ export const SPARK_DATA = AGENT_ORDER.map((slug) => {
     slug,
     name: AGENTS[slug].name,
     series,
-    w5: series[series.length - 1],
+    w8: series[series.length - 1],
   }
 })

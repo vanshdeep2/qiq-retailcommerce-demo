@@ -1,8 +1,11 @@
 import '../styles/components.css'
 
-export default function NBACard({ number, title, detail, level, kpis = [], impact, link }) {
+export default function NBACard({ number, title, detail, level, kpis = [], impact, link, onClick }) {
+  const Wrapper = onClick ? 'button' : 'div'
+  const wrapperProps = onClick ? { type: 'button', onClick } : {}
+
   return (
-    <div className="action-nba">
+    <Wrapper className={`action-nba${onClick ? ' action-nba--clickable' : ''}`} {...wrapperProps}>
       <div className="action-nba-num">{number}</div>
       <div className="action-nba-body">
         <div className="action-nba-title">{title}</div>
@@ -24,6 +27,7 @@ export default function NBACard({ number, title, detail, level, kpis = [], impac
         )}
       </div>
       {impact && <div className="action-nba-impact">{impact}</div>}
-    </div>
+      {onClick && <div className="ckp-drill">Details →</div>}
+    </Wrapper>
   )
 }

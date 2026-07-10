@@ -13,7 +13,7 @@ export default function CoachingWeekMarker({ weekLabel, variant = 'ccm' }) {
       strokeDasharray={isQa ? '4 3' : '6 4'}
       label={
         variant === 'ccm'
-          ? { content: CoachingWeekBoxLabel, position: 'insideTop', offset: 4 }
+          ? (props) => <CoachingWeekBoxLabel {...props} weekLabel={weekLabel} />
           : undefined
       }
 

@@ -20,6 +20,19 @@ button.ledger-agent-link {
   text-decoration: underline;
 }
 
+.queue-comparison-wrap {
+  margin-bottom: 28px;
+}
+
+.queue-comparison-table .queue-row-highlight td {
+  background: #fafaf9;
+  font-weight: 600;
+}
+
+.queue-comparison-table td:first-child {
+  font-weight: 600;
+}
+
 button.chart-card {
   display: block; width: 100%; text-align: left; font-family: inherit;
   color: inherit;

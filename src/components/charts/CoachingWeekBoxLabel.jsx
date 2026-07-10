@@ -1,25 +1,24 @@
-const LABEL = 'Coaching deployed W3.'
 const PAD_X = 6
 const BOX_H = 16
-// Measured equivalent for 600 10px DM Sans
-const TEXT_WIDTH = 118
-const BOX_W = TEXT_WIDTH + PAD_X * 2
 
-export default function CoachingWeekBoxLabel({ viewBox, parentViewBox }) {
+export default function CoachingWeekBoxLabel({ viewBox, parentViewBox, weekLabel = 'W5' }) {
   if (!viewBox) return null
 
+  const label = `Coaching deployed ${weekLabel}.`
+  const textWidth = Math.max(118, label.length * 6.2)
+  const boxW = textWidth + PAD_X * 2
+
   const { x, y, width } = viewBox
-  // Vertical ReferenceLine rects have width 0; x is the line pixel position.
   const lineX = x + (width || 0) / 2
   const top = y ?? 0
   const boxY = top + 4
-  let boxX = lineX - BOX_W / 2
+  let boxX = lineX - boxW / 2
   if (parentViewBox?.width > 0) {
     const chartLeft = parentViewBox.x
     const chartRight = parentViewBox.x + parentViewBox.width
-    boxX = Math.min(Math.max(boxX, chartLeft), Math.max(chartRight - BOX_W, chartLeft))
+    boxX = Math.min(Math.max(boxX, chartLeft), Math.max(chartRight - boxW, chartLeft))
   }
-  const textX = boxX + BOX_W / 2
+  const textX = boxX + boxW / 2
   const textY = boxY + BOX_H / 2
 
   return (
@@ -27,7 +26,7 @@ export default function CoachingWeekBoxLabel({ viewBox, parentViewBox }) {
       <rect
         x={boxX}
         y={boxY}
-        width={BOX_W}
+        width={boxW}
         height={BOX_H}
         rx={3}
         ry={3}
@@ -45,7 +44,7 @@ export default function CoachingWeekBoxLabel({ viewBox, parentViewBox }) {
         textAnchor="middle"
         dominantBaseline="middle"
       >
-        {LABEL}
+        {label}
       </text>
     </g>
   )

@@ -134,6 +134,21 @@
   font-size: 12px; color: var(--muted); line-height: 1.45;
   padding: 14px 18px; border-top: 0.5px solid var(--border); background: var(--bg); margin: 0;
 }
+.perf-metric-main.clickable-card,
+.perf-metric-item.clickable-card,
+.perf-spark-wrap.clickable-card {
+  background: none;
+  border: none;
+  font-family: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+.perf-metric-item.clickable-card:hover,
+.perf-metric-main.clickable-card:hover,
+.perf-spark-wrap.clickable-card:hover {
+  background: rgba(26, 26, 46, 0.03);
+  border-radius: 6px;
+}
 
 @media (max-width: 860px) {
   .agent-select { max-width: 100%; min-width: 0; flex: 1; }
