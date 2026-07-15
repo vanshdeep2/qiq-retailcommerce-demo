@@ -1,15 +1,20 @@
-export const ACTUAL_AHT = 348
-export const REPEAT_CONTACTS = 2300
-export const UNNECESSARY_ESCALATIONS = 918
+import derivedKpis from './derivedKpis.json'
+
+export const DERIVED_KPIS = derivedKpis
+export const SOURCE_KPIS = derivedKpis.sources
+
+export const ACTUAL_AHT = derivedKpis.overall.aht
+export const REPEAT_CONTACTS = derivedKpis.overall.repeatContacts
+export const UNNECESSARY_ESCALATIONS = derivedKpis.overall.unnecessaryEscalations
 export const PAYMENT_CONTACTS = 0
 export const MERCHANT_CHURN_PROXY = 0
 export const PERIOD_WEEKS = 8
 
-export const FCR = 61.0
-export const CSAT = 3.6
-export const ESC_RATE = 9.2
-export const TR_RATE = 14.1
-export const RCR_RATE = 23.0
+export const FCR = derivedKpis.overall.fcr
+export const CSAT = derivedKpis.overall.csat
+export const ESC_RATE = derivedKpis.overall.esc
+export const TR_RATE = derivedKpis.overall.tr
+export const RCR_RATE = derivedKpis.overall.rcr
 export const ER_TARGET = 5
 export const TR_TARGET = 8
 export const RCR_TARGET = 12
@@ -24,14 +29,7 @@ export const DEFAULTS = {
 export const WK8 = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8']
 export const WK5 = WK8
 
-export const TREND = {
-  aht: [362, 375, 384, 387, 386, 337, 333, 336],
-  fcr: [63.0, 61.4, 60.0, 58.6, 57.6, 66.2, 67.5, 65.8],
-  esc: [7.2, 8.1, 9.0, 9.8, 10.2, 9.0, 8.5, 8.2],
-  csat: [3.59, 3.49, 3.44, 3.44, 3.33, 3.61, 3.59, 3.59],
-  tr: [11.2, 12.5, 13.8, 14.5, 15.0, 13.2, 12.8, 12.0],
-  rcr: [18.5, 20.2, 22.1, 24.0, 25.5, 22.0, 20.5, 19.0],
-}
+export const TREND = derivedKpis.trend
 
 export const CROSS_KPI_PATTERNS = [
   {

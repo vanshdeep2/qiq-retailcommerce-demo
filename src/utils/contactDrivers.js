@@ -58,6 +58,7 @@ export function topAgentsForDriver(records, l1Category, l2Driver, limit = 5) {
   )
   const counts = new Map()
   for (const r of subset) {
+    if (!r.agent_name) continue
     counts.set(r.agent_name, (counts.get(r.agent_name) || 0) + 1)
   }
   return [...counts.entries()]

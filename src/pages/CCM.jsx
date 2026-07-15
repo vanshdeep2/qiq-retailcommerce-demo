@@ -1,16 +1,19 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useMemo, useState } from 'react'
+import { useLocation } from 'react-router-dom'
 import AgentTlModal from '../components/AgentTlModal'
 import CoachingHealthPanel from '../components/CoachingHealthPanel'
 import MetricInsightDrawer from '../components/MetricInsightDrawer'
+import NBACard from '../components/NBACard'
 import Nav from '../components/Nav'
 import FlowBar from '../components/FlowBar'
 import LedgerTable from '../components/LedgerTable'
 import ModalShell from '../components/ModalShell'
 import SparklineChart from '../components/charts/SparklineChart'
 import SparkBarChart from '../components/charts/SparkBarChart'
-import { CALLS_PILL, LIVE_LABEL } from '../data/executiveConstants'
+import { CALLS_PILL, LIVE_LABEL, SOURCE_KPIS } from '../data/executiveConstants'
 import {
   BEST_PRACTICE_CARDS,
+  AHT_ACTUAL,
   CF_BAR_COLORS,
   CF_WEEKLY,
   COACHING_LEDGER_ROWS,
@@ -18,6 +21,7 @@ import {
   COACHING_WEEK_INDEX,
   HERO_CHIPS,
   HERO_STATS,
+  OVERALL_FCR,
   PATTERN_CARDS,
   QUEUE_COMPARISON,
   QUALITY_SUMMARY,
@@ -29,6 +33,7 @@ import {
 } from '../data/ccmConstants'
 import { AGENT_SLUGS } from '../data/contactSearchConstants'
 import { formatAht, fmtPct } from '../utils/format'
+import { aggregateSourcePerformance, buildSourceRowInsight, formatSourceTime, sourcePerformanceFromDerived } from '../utils/sourceMetrics'
 import '../styles/ccm.css'
 import '../styles/teamlead.css'
 
@@ -55,12 +60,18 @@ function DrawerTrendChart({ dataKey, color, formatValue }) {
 }
 
 export default function CCM() {
+  const location = useLocation()
   const [metricsDrawerOpen, setMetricsDrawerOpen] = useState(false)
   const [insightMetric, setInsightMetric] = useState(null)
+  const [insightOverrides, setInsightOverrides] = useState(null)
   const [agentTlModalOpen, setAgentTlModalOpen] = useState(false)
   const [agentTlModalSlug, setAgentTlModalSlug] = useState(null)
   const [calls, setCalls] = useState([])
   const drawerSections = getMetricsDrawerSections()
+  const sourceRows = useMemo(
+    () => (calls.length ? aggregateSourcePerformance(calls) : sourcePerformanceFromDerived(SOURCE_KPIS)),
+    [calls],
+  )
 
   useEffect(() => {
     fetch('/data/contact_search_data.json')
@@ -72,9 +83,25 @@ export default function CCM() {
       .catch(() => setCalls([]))
   }, [])
 
+  useEffect(() => {
+    if (location.hash !== '#channel-source-performance') return
+    window.requestAnimationFrame(() => {
+      document.getElementById('channel-source-performance')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+    })
+  }, [location.hash, sourceRows.length])
+
   const openAgentModal = (slug) => {
     setAgentTlModalSlug(slug)
     setAgentTlModalOpen(true)
+  }
+
+  const openInsight = (metricId, overrides = null) => {
+    setInsightMetric(metricId)
+    setInsightOverrides(overrides)
+  }
+
+  const openSourceRow = (row) => {
+    openInsight('ccm-source-performance', buildSourceRowInsight(row))
   }
 
   const formatDrawerValue = (section, v) => {
@@ -173,6 +200,78 @@ export default function CCM() {
           </table>
         </div>
 
+        <div className="connector" id="channel-source-performance">Channel &amp; Source Performance</div>
+        <p className="section-sublabel">Performance calibration by human channel and Sienna AI email source</p>
+        <div className="drivers-table-wrap queue-comparison-wrap">
+          <table className="drivers-table queue-comparison-table source-performance-table">
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Volume</th>
+                <th>CSAT</th>
+                <th>FCR</th>
+                <th>Repeat Contact Rate</th>
+                <th>Avg Handle/Response Time</th>
+                <th>Escalation to Human</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sourceRows.map((row) => (
+                <tr
+                  key={row.source}
+                  className="source-performance-row"
+                  onClick={() => openSourceRow(row)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      openSourceRow(row)
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <td className="subcat-name">
+                    {row.label}
+                    {row.source === 'email_sienna' && <span className="badge badge-ai">AI</span>}
+                    <span className="driver-drill-hint">View source detail →</span>
+                  </td>
+                  <td>{row.volume.toLocaleString()}</td>
+                  <td>{row.csat.toFixed(2)}</td>
+                  <td>{row.fcr.toFixed(1)}%</td>
+                  <td>{row.rcr.toFixed(1)}%</td>
+                  <td>{formatSourceTime(row)}</td>
+                  <td>{row.escalationToHuman == null ? 'n/a' : `${row.escalationToHuman.toFixed(1)}%`}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        </div>
+
+        <div className="source-insight-grid">
+          <button
+            type="button"
+            className="pattern-card pattern-card-green clickable-card source-insight-card"
+            onClick={() => openInsight('ccm-sienna-channel-insight')}
+          >
+            <div className="pattern-top">
+              <div className="pattern-title">Sienna Email Routing Insight</div>
+              <span className="pattern-level">Analyst insight</span>
+            </div>
+            <div className="pattern-body">
+              Sienna resolves routine email contacts at 71% FCR with a median response time of 8 minutes, outperforming human email handling on Order Status, Refund Requests, and Shipping &amp; Delivery drivers. 12% of Sienna contacts escalate to human agents; these are concentrated in Returns &amp; Exchanges and Reimbursements &amp; Adjustments, where policy judgment is required. Human email FCR on these complex drivers is unaffected by Sienna routing.
+            </div>
+            <div className="ckp-drill">Details →</div>
+          </button>
+          <NBACard
+            number="Next Best Action"
+            title="Route routine status emails to Sienna"
+            detail="Route all Order Status, Refund Status, and Shipping & Delivery emails to Sienna by default. Projected impact: approximately 280 human email contacts per week redirected, freeing an estimated 19 human agent hours weekly for complex contact handling."
+            kpis={['Email FCR', 'Response Time', 'Human Capacity']}
+            impact="~19 hrs/week freed"
+            onClick={() => openInsight('ccm-sienna-nba')}
+          />
+        </div>
+
         <div className="connector">Performance Trends · 8 Weeks</div>
         <div className="chart-section-head">
           <p className="section-sublabel">W5 formal coaching intervention marked on all charts</p>
@@ -185,7 +284,7 @@ export default function CCM() {
             <div className="chart-top">
               <div className="chart-top-main">
                 <div className="chart-title">Average Handle Time</div>
-                <div className="chart-current val-amber">5m 48s</div>
+                <div className="chart-current val-amber">{formatAht(AHT_ACTUAL)}</div>
                 <div className="chart-meta">Target: 4m 30s · 8-week avg</div>
                 <div className="chart-var chg-amber">+28.9% vs target</div>
               </div>
@@ -210,7 +309,7 @@ export default function CCM() {
             <div className="chart-top">
               <div className="chart-top-main">
                 <div className="chart-title">First Contact Resolution</div>
-                <div className="chart-current val-red">61.0%</div>
+                <div className="chart-current val-red">{OVERALL_FCR.toFixed(1)}%</div>
                 <div className="chart-meta">Target: 78% · 8-week avg</div>
                 <div className="chart-var chg-red">-21.8% vs target</div>
               </div>
@@ -355,8 +454,12 @@ export default function CCM() {
 
       <MetricInsightDrawer
         open={Boolean(insightMetric)}
-        onClose={() => setInsightMetric(null)}
+        onClose={() => {
+          setInsightMetric(null)
+          setInsightOverrides(null)
+        }}
         metricId={insightMetric}
+        overrides={insightMetric === 'ccm-source-performance' ? insightOverrides : null}
       />
 
       <ModalShell

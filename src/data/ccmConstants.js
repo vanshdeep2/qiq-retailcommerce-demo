@@ -1,23 +1,23 @@
 import { formatAht } from '../utils/format'
+import derivedKpis from './derivedKpis.json'
 
 export const WK_LABELS = ['W1', 'W2', 'W3', 'W4', 'W5', 'W6', 'W7', 'W8']
 export const COACHING_WEEK_INDEX = 4
-export const AHT_ACTUAL = 348
+export const AHT_ACTUAL = derivedKpis.overall.aht
+export const OVERALL_FCR = derivedKpis.overall.fcr
+export const OVERALL_CSAT = derivedKpis.overall.csat
 export const AHT_TARGET = 270
 export const TREND = {
-  aht: [362, 375, 384, 387, 386, 337, 333, 336],
+  ...derivedKpis.trend,
   nps: [-12, -8, -15, -18, -22, -5, 2, 4],
-  fcr: [63.0, 61.4, 60.0, 58.6, 57.6, 66.2, 67.5, 65.8],
-  csat: [3.59, 3.49, 3.44, 3.44, 3.33, 3.61, 3.59, 3.59],
-  er: [7.2, 8.1, 9.0, 9.8, 10.2, 9.0, 8.5, 8.2],
 }
-export const RETURNS_AHT = [441, 456, 470, 492, 495, 408, 393, 380]
-export const RETURNS_FCR = [58.5, 44.8, 42.5, 38.7, 37.0, 61.2, 62.7, 58.9]
+export const RETURNS_AHT = derivedKpis.returns.aht
+export const RETURNS_FCR = derivedKpis.returns.fcr
 export const T1_RESOLUTION = RETURNS_FCR
 export const COACHING_DEPLOYMENT = [0, 0, 0, 0, 100, 80, 60, 40]
 export const FORMAL_COACHING_AGENTS = [0, 0, 0, 0, 4, 4, 3, 2]
 export const MICRO_COACHING_TRIGGERS = [28, 31, 34, 36, 24, 14, 9, 6]
-export const CF_WEEKLY = [77, 82, 105, 123, 59, 45, 32, 41]
+export const CF_WEEKLY = derivedKpis.cfWeekly
 export const CF_BAR_COLORS = ['#c0392b', '#c0392b', '#c0392b', '#c0392b', '#d97706', '#1a7a4a', '#1a7a4a', '#1a7a4a']
 
 export const COACHING_HEALTH_STATS = [
@@ -101,13 +101,13 @@ export const BEST_PRACTICE_CARDS = [
 export function getMetricsDrawerSections() {
   return [
     { id: 'kpi-aht-drawer', label: 'Average Handle Time', value: formatAht(AHT_ACTUAL), valueClass: 'val-amber', sub: `Target: ${formatAht(AHT_TARGET)} · 8-week avg`, change: '+28.9% vs target', changeClass: 'chg-amber', dataKey: 'aht', color: '#d97706', note: 'AHT elevated on Returns queue - improving post-W5 coaching on handle efficiency' },
-    { id: 'kpi-fcr-drawer', label: 'First Contact Resolution', value: '61.0%', valueClass: 'val-red', sub: 'Target: 78% · 8-week avg', change: '-21.8% vs target', changeClass: 'chg-red', dataKey: 'fcr', color: '#1a7a4a', note: 'FCR trough at W5; recovery visible W6–W8 driven by returns coaching intervention' },
-    { id: 'kpi-csat', label: 'Customer Satisfaction Score', value: '3.60', valueClass: 'val-amber', sub: 'Target: 4.2 · 8-week avg', change: '-14.3% vs target', changeClass: 'chg-amber', dataKey: 'csat', color: '#d97706', note: 'CSAT declined W1–W5 on returns contacts; partial recovery W6–W8' },
+    { id: 'kpi-fcr-drawer', label: 'First Contact Resolution', value: `${derivedKpis.overall.fcr.toFixed(1)}%`, valueClass: 'val-red', sub: 'Target: 78% · 8-week avg', change: '-21.8% vs target', changeClass: 'chg-red', dataKey: 'fcr', color: '#1a7a4a', note: 'FCR trough at W5; recovery visible W6–W8 driven by returns coaching intervention' },
+    { id: 'kpi-csat', label: 'Customer Satisfaction Score', value: derivedKpis.overall.csat.toFixed(2), valueClass: 'val-amber', sub: 'Target: 4.2 · 8-week avg', change: '-14.3% vs target', changeClass: 'chg-amber', dataKey: 'csat', color: '#d97706', note: 'CSAT declined W1–W5 on returns contacts; partial recovery W6–W8' },
     {
       id: 'kpi-returns-dual',
       type: 'returns-dual',
       label: 'Returns Drivers · AHT + FCR',
-      value: '7m 24s · 50% FCR',
+      value: `${formatAht(Math.round(derivedKpis.returns.aht.reduce((sum, v) => sum + v, 0) / derivedKpis.returns.aht.length))} · ${Math.round(derivedKpis.returns.fcr.reduce((sum, v) => sum + v, 0) / derivedKpis.returns.fcr.length)}% FCR`,
       valueClass: 'val-amber',
       sub: 'Worst-performing drivers · Dual-axis trend',
       note: 'Returns AHT peaked W5 at 8m 15s while FCR hit trough at 37% - both recovering post-formal coaching W6–W8',

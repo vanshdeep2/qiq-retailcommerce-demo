@@ -1,7 +1,7 @@
 import { useEffect } from 'react'
 import CallDetailPanel from './CallDetailPanel'
 
-export default function CallDetailModal({ call, activeTab, setActiveTab, onClose }) {
+export default function CallDetailModal({ call, activeTab, setActiveTab, onClose, linkedCall, onOpenLinkedCall }) {
   useEffect(() => {
     function onKey(e) {
       if (e.key === 'Escape') onClose()
@@ -32,7 +32,7 @@ export default function CallDetailModal({ call, activeTab, setActiveTab, onClose
           <div>
             <div id="call-modal-title" className="call-modal-title">{call.call_id}</div>
             <div className="call-modal-subtitle">
-              {call.agent_name} · {call.call_date} · {call.call_category} · {call.call_subcategory}
+              {call.agent_name || 'Sienna AI'} · {call.call_date} · {call.call_category} · {call.call_subcategory}
             </div>
           </div>
           <button
@@ -48,6 +48,8 @@ export default function CallDetailModal({ call, activeTab, setActiveTab, onClose
           call={call}
           activeTab={activeTab}
           setActiveTab={setActiveTab}
+          linkedCall={linkedCall}
+          onOpenLinkedCall={onOpenLinkedCall}
           hideHeader
         />
       </div>

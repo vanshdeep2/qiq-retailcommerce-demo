@@ -1,0 +1,339 @@
+{
+  "overall": {
+    "volume": 10000,
+    "aht": 348,
+    "fcr": 61,
+    "csat": 3.6,
+    "rcr": 23,
+    "esc": 9.2,
+    "tr": 14.1,
+    "repeatContacts": 2300,
+    "unnecessaryEscalations": 920
+  },
+  "trend": {
+    "aht": [
+      345,
+      354,
+      361,
+      375,
+      370,
+      330,
+      327,
+      326
+    ],
+    "fcr": [
+      56.5,
+      60.7,
+      60,
+      56.1,
+      58.5,
+      65.4,
+      65.7,
+      65
+    ],
+    "csat": [
+      3.71,
+      3.59,
+      3.46,
+      3.37,
+      3.51,
+      3.7,
+      3.72,
+      3.73
+    ],
+    "esc": [
+      11.6,
+      9.8,
+      10.5,
+      9.3,
+      8.5,
+      7.4,
+      9.6,
+      7
+    ],
+    "er": [
+      11.6,
+      9.8,
+      10.5,
+      9.3,
+      8.5,
+      7.4,
+      9.6,
+      7
+    ],
+    "tr": [
+      30.2,
+      18.2,
+      9,
+      11.4,
+      11.2,
+      10.7,
+      11,
+      11.2
+    ],
+    "rcr": [
+      22.6,
+      23,
+      25.8,
+      28.2,
+      24.6,
+      21,
+      22.4,
+      16.4
+    ]
+  },
+  "returns": {
+    "aht": [
+      454,
+      476,
+      492,
+      513,
+      517,
+      418,
+      402,
+      394
+    ],
+    "fcr": [
+      45.3,
+      46.6,
+      46.7,
+      42.7,
+      43.5,
+      58,
+      61.1,
+      63.4
+    ]
+  },
+  "cfWeekly": [
+    77,
+    82,
+    105,
+    123,
+    59,
+    45,
+    32,
+    41
+  ],
+  "sources": {
+    "voice_human": {
+      "label": "Voice (Human)",
+      "volume": 6500,
+      "share": 65,
+      "csat": 3.58,
+      "fcr": 60.4,
+      "rcr": 24,
+      "aht": 348,
+      "responseTimeMinutes": 0,
+      "escalationToHuman": null,
+      "weekly": {
+        "csat": [
+          3.72,
+          3.6,
+          3.4,
+          3.34,
+          3.46,
+          3.68,
+          3.71,
+          3.73
+        ],
+        "fcr": [
+          59.9,
+          60.8,
+          59.2,
+          55.6,
+          56.3,
+          63.3,
+          63.9,
+          63.8
+        ]
+      },
+      "topDrivers": [
+        {
+          "name": "Returns & Exchanges",
+          "volume": 724
+        },
+        {
+          "name": "Refund Requests",
+          "volume": 566
+        },
+        {
+          "name": "Billing & Refunds",
+          "volume": 449
+        },
+        {
+          "name": "Order Issues",
+          "volume": 400
+        },
+        {
+          "name": "Shipping & Delivery",
+          "volume": 326
+        }
+      ]
+    },
+    "email_human": {
+      "label": "Email (Human)",
+      "volume": 1300,
+      "share": 13,
+      "csat": 3.5,
+      "fcr": 58,
+      "rcr": 29.2,
+      "aht": 349,
+      "responseTimeMinutes": 258.4,
+      "escalationToHuman": null,
+      "weekly": {
+        "csat": [
+          3.54,
+          3.55,
+          3.44,
+          3.17,
+          3.35,
+          3.61,
+          3.61,
+          3.69
+        ],
+        "fcr": [
+          29.7,
+          63.6,
+          62.4,
+          54.5,
+          58.7,
+          58.4,
+          63.9,
+          68.6
+        ]
+      },
+      "topDrivers": [
+        {
+          "name": "Returns & Exchanges",
+          "volume": 200
+        },
+        {
+          "name": "Refund Requests",
+          "volume": 93
+        },
+        {
+          "name": "Order Issues",
+          "volume": 78
+        },
+        {
+          "name": "Billing & Refunds",
+          "volume": 74
+        },
+        {
+          "name": "Reimbursements & Adjustments",
+          "volume": 60
+        }
+      ]
+    },
+    "email_sienna": {
+      "label": "Email (Sienna AI)",
+      "volume": 900,
+      "share": 9,
+      "csat": 3.9,
+      "fcr": 71,
+      "rcr": 9.2,
+      "aht": 0,
+      "responseTimeMinutes": 7.9,
+      "escalationToHuman": 12,
+      "weekly": {
+        "csat": [
+          3.86,
+          3.85,
+          3.83,
+          3.9,
+          3.94,
+          3.96,
+          4,
+          4.1
+        ],
+        "fcr": [
+          65.8,
+          71.1,
+          61.6,
+          67.6,
+          73,
+          83,
+          79.2,
+          100
+        ]
+      },
+      "topDrivers": [
+        {
+          "name": "Refund Requests",
+          "volume": 159
+        },
+        {
+          "name": "Order Status",
+          "volume": 159
+        },
+        {
+          "name": "Shipping & Delivery",
+          "volume": 158
+        },
+        {
+          "name": "Invoice Requests",
+          "volume": 158
+        },
+        {
+          "name": "Order Management",
+          "volume": 158
+        }
+      ]
+    },
+    "chat_human": {
+      "label": "Chat (Human)",
+      "volume": 1300,
+      "share": 13,
+      "csat": 3.58,
+      "fcr": 60.3,
+      "rcr": 21.5,
+      "aht": 346,
+      "responseTimeMinutes": 0,
+      "escalationToHuman": null,
+      "weekly": {
+        "csat": [
+          3.66,
+          3.4,
+          3.39,
+          3.41,
+          3.51,
+          3.73,
+          3.75,
+          3.77
+        ],
+        "fcr": [
+          56.3,
+          49.1,
+          60.3,
+          51.7,
+          56.6,
+          69.6,
+          69.4,
+          66.8
+        ]
+      },
+      "topDrivers": [
+        {
+          "name": "Returns & Exchanges",
+          "volume": 145
+        },
+        {
+          "name": "Refund Requests",
+          "volume": 114
+        },
+        {
+          "name": "Billing & Refunds",
+          "volume": 80
+        },
+        {
+          "name": "Order Issues",
+          "volume": 71
+        },
+        {
+          "name": "Shipping & Delivery",
+          "volume": 65
+        }
+      ]
+    }
+  }
+}

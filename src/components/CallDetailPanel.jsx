@@ -6,6 +6,7 @@ import {
   getMetBadge,
   getSectionBarClass,
   getWeekIndex,
+  formatSourceDisplay,
   parseTranscript,
 } from '../utils/contactSearch'
 
@@ -16,10 +17,34 @@ const TABS = [
   { id: 'agent', label: 'Agent Context' },
 ]
 
-function SummaryTab({ call }) {
+function isSiennaCall(call) {
+  return call.source === 'email_sienna'
+}
+
+function SummaryTab({ call, linkedCall, onOpenLinkedCall }) {
   return (
     <div className="detail-tab-content">
       <p className="detail-narrative">{call.narrative_summary}</p>
+
+      <div className="detail-stat-chips">
+        <span className={`detail-stat-chip ${isSiennaCall(call) ? 'detail-stat-chip-ai' : ''}`}>
+          Source: {formatSourceDisplay(call.source)}
+        </span>
+        {call.response_time_minutes != null && (
+          <span className="detail-stat-chip">
+            Response time: {call.response_time_minutes < 60 ? `${call.response_time_minutes} min` : `${(call.response_time_minutes / 60).toFixed(1)} hrs`}
+          </span>
+        )}
+        {linkedCall && (
+          <button
+            type="button"
+            className="detail-linked-call-btn"
+            onClick={() => onOpenLinkedCall?.(linkedCall.call_id)}
+          >
+            {call.escalated_to_human ? 'Open human follow-up' : 'Open Sienna handoff'} · {linkedCall.call_id}
+          </button>
+        )}
+      </div>
 
       {call.timeline?.length > 0 && (
         <div className="detail-section">
@@ -212,6 +237,34 @@ function TranscriptTab({ call }) {
   )
 }
 
+function EmailThreadTab({ call, linkedCall, onOpenLinkedCall }) {
+  const thread = call.email_thread || []
+  return (
+    <div className="detail-tab-content">
+      <div className="email-thread-box">
+        {thread.map((item, i) => (
+          <div key={`${item.from}-${i}`} className={`email-thread-message email-thread-${item.from}`}>
+            <div className="email-thread-meta">
+              {item.from === 'customer' ? 'Customer email' : item.from === 'sienna' ? 'Sienna automated response' : item.from === 'handoff' ? 'Handoff note' : 'Human follow-up'}
+            </div>
+            {item.subject && <div className="email-thread-subject">{item.subject}</div>}
+            <p>{item.body}</p>
+          </div>
+        ))}
+      </div>
+      {linkedCall && (
+        <button
+          type="button"
+          className="detail-linked-call-btn detail-linked-call-btn-wide"
+          onClick={() => onOpenLinkedCall?.(linkedCall.call_id)}
+        >
+          Open linked human contact {linkedCall.call_id}
+        </button>
+      )}
+    </div>
+  )
+}
+
 function AgentContextTab({ call }) {
   const slug = AGENT_SLUGS[call.agent_name]
   const agent = slug ? AGENTS[slug] : null
@@ -242,7 +295,15 @@ function AgentContextTab({ call }) {
   )
 }
 
-export default function CallDetailPanel({ call, activeTab, setActiveTab, hideHeader = false }) {
+export default function CallDetailPanel({ call, activeTab, setActiveTab, linkedCall = null, onOpenLinkedCall, hideHeader = false }) {
+  const tabs = isSiennaCall(call)
+    ? [
+      { id: 'summary', label: 'Summary' },
+      { id: 'email', label: 'Email Thread' },
+    ]
+    : TABS
+  const safeActiveTab = tabs.some((tab) => tab.id === activeTab) ? activeTab : 'summary'
+
   return (
     <div className="call-detail-panel">
       {!hideHeader && (
@@ -250,18 +311,18 @@ export default function CallDetailPanel({ call, activeTab, setActiveTab, hideHea
           <div>
             <div className="detail-call-id">{call.call_id}</div>
             <div className="detail-call-meta">
-              {call.merchant_name} · Order {call.merchant_contact} · {call.agent_name} · {call.call_date} · {call.call_category} · {call.call_subcategory}
+              {call.merchant_name} · Order {call.merchant_contact} · {call.agent_name || 'Sienna AI'} · {call.call_date} · {call.call_category} · {call.call_subcategory}
             </div>
           </div>
         </div>
       )}
 
       <div className="detail-tabs">
-        {TABS.map((tab) => (
+        {tabs.map((tab) => (
           <button
             key={tab.id}
             type="button"
-            className={`detail-tab ${activeTab === tab.id ? 'detail-tab-active' : ''}`}
+            className={`detail-tab ${safeActiveTab === tab.id ? 'detail-tab-active' : ''}`}
             onClick={() => setActiveTab(tab.id)}
           >
             {tab.label}
@@ -269,10 +330,11 @@ export default function CallDetailPanel({ call, activeTab, setActiveTab, hideHea
         ))}
       </div>
 
-      {activeTab === 'summary' && <SummaryTab call={call} />}
-      {activeTab === 'qa' && <QaScorecardTab call={call} />}
-      {activeTab === 'transcript' && <TranscriptTab call={call} />}
-      {activeTab === 'agent' && <AgentContextTab call={call} />}
+      {safeActiveTab === 'summary' && <SummaryTab call={call} linkedCall={linkedCall} onOpenLinkedCall={onOpenLinkedCall} />}
+      {safeActiveTab === 'qa' && <QaScorecardTab call={call} />}
+      {safeActiveTab === 'transcript' && <TranscriptTab call={call} />}
+      {safeActiveTab === 'email' && <EmailThreadTab call={call} linkedCall={linkedCall} onOpenLinkedCall={onOpenLinkedCall} />}
+      {safeActiveTab === 'agent' && <AgentContextTab call={call} />}
     </div>
   )
 }

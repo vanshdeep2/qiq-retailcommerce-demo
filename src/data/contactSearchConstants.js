@@ -34,6 +34,7 @@ export const AGENT_SLUGS = {
 
 export const DEFAULT_FILTERS = {
   agent: 'all',
+  source: 'all',
   category: 'all',
   dateFrom: '2026-04-06',
   dateTo: '2026-05-31',
@@ -43,6 +44,21 @@ export const DEFAULT_FILTERS = {
   week: 'all',
   resolution: 'all',
 }
+
+export const SOURCE_LABELS = {
+  voice_human: 'Voice',
+  email_human: 'Email - Human',
+  email_sienna: 'Email - Sienna',
+  chat_human: 'Chat',
+}
+
+export const SOURCE_OPTIONS = [
+  { value: 'all', label: 'All sources' },
+  { value: 'voice_human', label: 'Voice' },
+  { value: 'email_human', label: 'Email - Human' },
+  { value: 'email_sienna', label: 'Email - Sienna' },
+  { value: 'chat_human', label: 'Chat' },
+]
 
 export const WEEK_BOUNDARIES = [
   { start: '2026-04-06', end: '2026-04-12', label: 'W1' },

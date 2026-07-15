@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from 'react'
-import { Link, useNavigate } from 'react-router-dom'
+import { useNavigate } from 'react-router-dom'
 import AgentTlModal from '../components/AgentTlModal'
 import Nav from '../components/Nav'
 import FlowBar from '../components/FlowBar'

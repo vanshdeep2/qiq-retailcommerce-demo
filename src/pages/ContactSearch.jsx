@@ -1,11 +1,13 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useCallback, useEffect, useMemo, useRef, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import Nav from '../components/Nav'
 import CallDetailModal from '../components/CallDetailModal'
 import { CALLS_PILL, LIVE_LABEL } from '../data/executiveConstants'
-import { CF_QUICK_LINKS, DEFAULT_FILTERS, formatCfCategory, WEEK_BOUNDARIES } from '../data/contactSearchConstants'
+import { CF_QUICK_LINKS, DEFAULT_FILTERS, SOURCE_OPTIONS, formatCfCategory, WEEK_BOUNDARIES } from '../data/contactSearchConstants'
 import {
   filterCalls,
+  formatSourceDisplay,
   formatQaScoreDisplay,
   getQaScoreCellClass,
   sortCalls,
@@ -17,6 +19,7 @@ import '../styles/search.css'
 const COLUMNS = [
   { key: 'call_id', label: 'Call ID', sortField: 'call_id' },
   { key: 'agent_name', label: 'Agent', sortField: 'agent_name' },
+  { key: 'source', label: 'Source', sortField: 'source' },
   { key: 'call_date', label: 'Date', sortField: 'call_date' },
   { key: 'call_category', label: 'Category', sortField: 'call_category' },
   { key: 'qa_score', label: 'QA Score', sortField: 'qa_score' },
@@ -93,7 +96,7 @@ export default function ContactSearch() {
   const selectedCall = expandedCall ? callIdIndex.get(expandedCall) : null
 
   const pendingQaCount = useMemo(
-    () => filteredCalls.filter((c) => c.qa_score == null).length,
+    () => filteredCalls.filter((c) => c.source !== 'email_sienna' && c.qa_score == null).length,
     [filteredCalls],
   )
 
@@ -213,6 +216,14 @@ export default function ContactSearch() {
               <option value="all">All agents</option>
               {agentOptions.map((a) => (
                 <option key={a} value={a}>{a}</option>
+              ))}
+            </select>
+          </div>
+          <div className="search-field">
+            <label htmlFor="filter-source">Source</label>
+            <select id="filter-source" value={filters.source} onChange={updateFilter('source')}>
+              {SOURCE_OPTIONS.map((source) => (
+                <option key={source.value} value={source.value}>{source.label}</option>
               ))}
             </select>
           </div>
@@ -348,12 +359,17 @@ export default function ContactSearch() {
                         onClick={() => openCall(call.call_id)}
                       >
                         <td>{call.call_id}</td>
-                        <td>{call.agent_name}</td>
+                        <td>{call.agent_name || 'Sienna AI'}</td>
+                        <td>
+                          <span className={`source-pill${call.source === 'email_sienna' ? ' source-pill-ai' : ''}`}>
+                            {formatSourceDisplay(call.source)}
+                          </span>
+                        </td>
                         <td>{formatDate(call.call_date)}</td>
                         <td>{call.call_category}</td>
                         <td>
                           <span className={`qa-pill ${getQaScoreCellClass(call.qa_score, call.qa_pass)}`}>
-                            {formatQaScoreDisplay(call.qa_score, call.qa_pass)}
+                            {call.source === 'email_sienna' ? 'N/A' : formatQaScoreDisplay(call.qa_score, call.qa_pass)}
                           </span>
                         </td>
                         <td>
@@ -411,6 +427,8 @@ export default function ContactSearch() {
           activeTab={activeTab}
           setActiveTab={setActiveTab}
           onClose={() => setExpandedCall(null)}
+          linkedCall={selectedCall.linked_contact_id ? callIdIndex.get(selectedCall.linked_contact_id) : null}
+          onOpenLinkedCall={openCall}
         />
       )}
     </>

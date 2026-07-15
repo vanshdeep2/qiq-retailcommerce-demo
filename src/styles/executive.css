@@ -1,3 +1,5 @@
+@import './operations.css';
+
 .page { max-width: 1300px; margin: 0 auto; padding: 32px 32px 80px; }
 .briefing-kicker {
   font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase;
@@ -205,8 +207,11 @@
 .metrics-cta:hover { color: var(--dark); text-decoration: underline; }
 
 .driving-panel { background: var(--white); border: 0.5px solid var(--border); border-radius: 8px; padding: 0; margin-bottom: 28px; box-shadow: 0 1px 4px rgba(26,26,46,0.04); overflow: hidden; }
-.driving-tab-bar { padding: 0 20px; border-bottom: 0.5px solid var(--border); }
-.driving-tab { display: inline-block; font-size: 13px; font-weight: 600; color: var(--dark); padding: 14px 0 12px; border-bottom: 2px solid var(--dark); margin-bottom: -0.5px; }
+.driving-tab-bar { display: flex; gap: 18px; align-items: center; flex-wrap: wrap; padding: 0 20px; border-bottom: 0.5px solid var(--border); }
+.driving-tab { display: inline-block; font-size: 13px; font-weight: 600; color: var(--muted); padding: 14px 0 12px; border-bottom: 2px solid transparent; margin-bottom: -0.5px; }
+.driving-tab-button { background: none; border: none; border-bottom: 2px solid transparent; font-family: inherit; cursor: pointer; }
+.driving-tab-button:hover { color: var(--dark); }
+.driving-tab-active { color: var(--dark); border-bottom-color: var(--dark); }
 .drivers-table-wrap { overflow-x: auto; padding: 0 20px; }
 .drivers-table { width: 100%; border-collapse: collapse; font-size: 12px; }
 .drivers-table th { text-align: left; font-size: 10px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--light); padding: 12px 10px 10px 0; border-bottom: 0.5px solid var(--border); white-space: nowrap; }
@@ -230,6 +235,7 @@
 .signal-green { background: #fff7ed; color: #c2410c; border: 0.5px solid #fed7aa; }
 .signal-amber { background: #fff7ed; color: #c2410c; border: 0.5px solid #fed7aa; }
 .driving-cross-kpi { border-top: 0.5px solid var(--border); background: var(--bg); padding: 16px 20px 20px; }
+.source-performance-wrap { margin-bottom: 28px; padding-bottom: 4px; background: var(--white); border: 0.5px solid var(--border); border-radius: 8px; box-shadow: 0 1px 4px rgba(26,26,46,0.04); }
 .ckp-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
 .ckp-card {
   background: var(--white); border: 0.5px solid var(--border); border-radius: 8px;

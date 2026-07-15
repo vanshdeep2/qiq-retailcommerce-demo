@@ -135,7 +135,25 @@ button.chart-drill.metrics-drawer-drill:hover { color: var(--dark); }
 .badge-tl { background: #fff7ed; color: #c2410c; border: 0.5px solid #fed7aa; font-size: 9px; padding: 3px 8px; }
 .badge-navy { background: #eef2ff; color: var(--dark); border: 0.5px solid #c7d2fe; }
 .badge-red { background: #fef2f2; color: var(--red); border: 0.5px solid #fecaca; }
+.badge-ai {
+  margin-left: 8px;
+  background: #eff6ff;
+  color: #2563eb;
+  border: 0.5px solid #bfdbfe;
+}
 .status-cell { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }
+
+.source-performance-table td:first-child {
+  min-width: 210px;
+}
+
+.source-performance-row {
+  cursor: pointer;
+}
+
+.source-performance-row:hover td {
+  background: #fafaf9;
+}
 .pattern-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; margin-bottom: 28px; }
 .pattern-card {
   background: var(--white); border: 0.5px solid var(--border); border-radius: 8px;

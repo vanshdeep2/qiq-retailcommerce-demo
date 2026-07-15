@@ -19,6 +19,7 @@ const __dirname = dirname(fileURLToPath(import.meta.url))
 const ROOT = join(__dirname, '..')
 const OUT = join(ROOT, 'public', 'data', 'contact_search_data.json')
 const STATS_OUT = join(ROOT, 'scripts', 'dataset-stats.json')
+const DERIVED_KPIS_OUT = join(ROOT, 'src', 'data', 'derivedKpis.json')
 
 const TOTAL = 10000
 const WEEKS = 8
@@ -37,6 +38,44 @@ const WEEK_BOUNDARIES = [
 
 const CHANNELS = ['voice', 'email', 'chat']
 const CHANNEL_WEIGHTS = [0.65, 0.22, 0.13]
+
+const SOURCES = ['voice_human', 'email_human', 'email_sienna', 'chat_human']
+const SOURCE_TARGETS = {
+  voice_human: 6500,
+  email_human: 1300,
+  email_sienna: 900,
+  chat_human: 1300,
+}
+const SOURCE_CHANNEL = {
+  voice_human: 'voice',
+  email_human: 'email',
+  email_sienna: 'email',
+  chat_human: 'chat',
+}
+const SOURCE_FCR_TARGETS = {
+  voice_human: 3923,
+  email_human: 754,
+  email_sienna: 639,
+  chat_human: 784,
+}
+const SOURCE_CSAT_TARGETS = {
+  voice_human: 3.58,
+  email_human: 3.5,
+  email_sienna: 3.9,
+  chat_human: 3.58,
+}
+const SIENNA_ESCALATION_RATE = 0.12
+const SIMPLE_SIENNA_DRIVERS = [
+  { l1: 'Orders & Transactions', l2: 'Order Status' },
+  { l1: 'Billing & Payments', l2: 'Refund Requests' },
+  { l1: 'Service Delivery', l2: 'Shipping & Delivery' },
+  { l1: 'Billing & Payments', l2: 'Invoice Requests' },
+  { l1: 'Orders & Transactions', l2: 'Order Management' },
+]
+const COMPLEX_SIENNA_DRIVERS = [
+  { l1: 'Orders & Transactions', l2: 'Returns & Exchanges' },
+  { l1: 'Billing & Payments', l2: 'Reimbursements & Adjustments' },
+]
 
 const FEATURED_AGENTS = [
   'Michael Naidoo', 'Nomsa Dlamini', 'Lerato Nkosi', 'Pieter Botha', 'Busisiwe Maseko',
@@ -112,6 +151,36 @@ function pickWeighted(items, weights) {
 
 function pick(arr) {
   return arr[Math.floor(rand() * arr.length)]
+}
+
+function shuffle(arr) {
+  return [...arr].sort(() => rand() - 0.5)
+}
+
+function predictedCsatLabel(csat) {
+  return csat >= 4.5 ? 'Very Satisfied' : csat >= 4 ? 'Satisfied' : csat >= 3 ? 'Neutral' : csat >= 2 ? 'Dissatisfied' : 'Very Dissatisfied'
+}
+
+function updateCsat(record, csat) {
+  record.predicted_csat_score = Math.max(1, Math.min(5, Math.round(csat * 10) / 10))
+  record.predicted_csat_label = predictedCsatLabel(record.predicted_csat_score)
+  record.predicted_nps_score = Math.round(record.predicted_csat_score * 2 - 1)
+}
+
+function sourceLabel(source) {
+  return {
+    voice_human: 'Voice (Human)',
+    email_human: 'Email (Human)',
+    email_sienna: 'Email (Sienna AI)',
+    chat_human: 'Chat (Human)',
+  }[source] || source
+}
+
+function formatResponseTime(minutes) {
+  if (minutes == null) return 'n/a'
+  if (minutes < 60) return `${minutes} min`
+  const hours = minutes / 60
+  return `${hours.toFixed(1)} hrs`
 }
 
 function pickDriver(opts = {}) {
@@ -648,6 +717,7 @@ function buildTranscript({
 function buildRecord(id, weekIdx, opts = {}) {
   const { l1, l2 } = pickDriver(opts)
   const channel = opts.channel || pickWeighted(CHANNELS, CHANNEL_WEIGHTS)
+  const source = opts.source || (channel === 'voice' ? 'voice_human' : channel === 'chat' ? 'chat_human' : 'email_human')
   const agent = opts.agent || pick(ALL_AGENTS)
 
   const cluster = opts.cluster || (rand() < 0.35 && isHighRiskDriver(l1, l2) ? pick(REPEAT_CLUSTERS) : null)
@@ -735,18 +805,24 @@ function buildRecord(id, weekIdx, opts = {}) {
     merchant_name: customer,
     merchant_contact: order,
     channel,
+    source,
     order_number: order,
     call_handling_time: aht,
+    response_time_minutes: channel === 'email' ? Math.round(190 + rand() * 125) : null,
     transcript,
     narrative_summary: summary,
     fcr_resolved: fcr,
     predicted_csat_score: csat,
-    predicted_csat_label: csat >= 4.5 ? 'Very Satisfied' : csat >= 4 ? 'Satisfied' : csat >= 3 ? 'Neutral' : csat >= 2 ? 'Dissatisfied' : 'Very Dissatisfied',
+    predicted_csat_label: predictedCsatLabel(csat),
     predicted_nps_score: Math.round(csat * 2 - 1),
     critical_failure: critical,
     critical_failure_category: cfType,
     escalated,
     transferred,
+    escalated_to_human: false,
+    escalated_from_sienna: false,
+    linked_contact_id: null,
+    email_thread: null,
     is_repeat_contact: isRepeat,
     qa_score: critical ? 0 : qaScore,
     qa_pass: qaPass,
@@ -764,6 +840,271 @@ function buildRecord(id, weekIdx, opts = {}) {
 
 function isHighRiskRecord(r) {
   return isHighRiskDriver(r.driver_category || r.call_category, r.driver_subcategory || r.call_subcategory)
+}
+
+function isSiennaRecord(r) {
+  return r.source === 'email_sienna'
+}
+
+function weekIndexForDate(date) {
+  const idx = WEEK_BOUNDARIES.findIndex((w) => date >= w.start && date <= w.end)
+  return idx >= 0 ? idx : 7
+}
+
+function setDriver(record, driver) {
+  record.driver_category = driver.l1
+  record.driver_subcategory = driver.l2
+  record.call_category = driver.l1
+  record.call_subcategory = driver.l2
+}
+
+function makeSiennaEmailThread(record, escalated, followUpId) {
+  const driver = record.driver_subcategory
+  const order = record.order_number
+  const salutation = `Hi Crestline team,`
+  const driverRequests = {
+    'Order Status': `Can you tell me where order ${order} is and when it will arrive?`,
+    'Refund Requests': `I returned order ${order} and want to confirm the refund status.`,
+    'Shipping & Delivery': `My tracking for order ${order} has not moved. Can you check the delivery status?`,
+    'Invoice Requests': `Please send me an invoice copy for order ${order}.`,
+    'Order Management': `I need help updating details on order ${order}.`,
+    'Returns & Exchanges': `I need to dispute the return outcome for order ${order}. The policy exception is not clear.`,
+    'Reimbursements & Adjustments': `Please review the adjustment on order ${order}. The amount looks incorrect.`,
+  }
+  const customerBody = `${salutation}\n\n${driverRequests[driver] || `Can you help with order ${order}?`}\n\nThanks,\n${record.merchant_name}`
+
+  const resolutionCopy = {
+    'Order Status': `Thanks for reaching out. I found order ${order}: it shipped from the Crestline warehouse and is scheduled to arrive within 2 business days. The tracking scan is active, so no action is needed from you.`,
+    'Refund Requests': `Thanks for checking. Refund ${order} has been approved and is queued to return to the original payment method. Most banks post it in 3-5 business days.`,
+    'Shipping & Delivery': `I checked order ${order}. The carrier missed the last scan but the package is still moving inside the delivery window. I have added a delivery watch and will trigger a carrier trace if there is no scan within 24 hours.`,
+    'Invoice Requests': `I found the invoice for order ${order} and attached the order summary, tax, and payment details. No further action is needed.`,
+    'Order Management': `I reviewed order ${order} and applied the requested order-management update where policy allows. The updated order details are now visible in your account.`,
+    'Returns & Exchanges': `I reviewed order ${order}. This return needs a policy judgment because the dispute involves exception handling, so I am escalating it to a human specialist with the full context.`,
+    'Reimbursements & Adjustments': `I reviewed order ${order}. The reimbursement calculation needs a human policy review, so I am escalating it with the transaction details and the adjustment history.`,
+  }
+
+  const thread = [
+    { from: 'customer', subject: `${driver} for ${order}`, body: customerBody },
+    { from: 'sienna', body: `Hello ${record.merchant_name.split(' ')[0]},\n\n${resolutionCopy[driver]}\n\nBest,\nSienna\nCrestline AI Email Support` },
+  ]
+
+  if (escalated) {
+    thread.push({
+      from: 'handoff',
+      body: `Handoff note: Sienna identified policy judgment required on ${driver}. Routed to human email contact ${followUpId} with customer, order, and driver context attached.`,
+    })
+    thread.push({
+      from: 'human_follow_up',
+      body: `Human follow-up created as ${followUpId}. The specialist owns final resolution and customer callback.`,
+    })
+  }
+
+  return thread
+}
+
+function renderEmailThread(thread) {
+  return thread.map((item) => {
+    const speaker = item.from === 'customer' ? 'Customer' : item.from === 'sienna' ? 'Sienna' : item.from === 'handoff' ? 'Handoff' : 'Human Follow-up'
+    const subject = item.subject ? `Subject: ${item.subject}\n` : ''
+    return `${speaker}: ${subject}${item.body}`
+  }).join('\n\n')
+}
+
+function sanitizeHumanSource(record, source) {
+  record.source = source
+  record.channel = SOURCE_CHANNEL[source]
+  record.email_thread = null
+  record.escalated_to_human = false
+  record.escalated_from_sienna = false
+  record.linked_contact_id = null
+  record.response_time_minutes = source === 'email_human'
+    ? Math.max(135, Math.round(210 + rand() * 95))
+    : null
+}
+
+function sanitizeSiennaRecord(record, driver, escalated, followUpId) {
+  setDriver(record, driver)
+  record.source = 'email_sienna'
+  record.channel = 'email'
+  record.agent_name = null
+  record.call_handling_time = null
+  record.response_time_minutes = escalated ? Math.round(18 + rand() * 8) : Math.max(4, Math.round(4 + rand() * 4))
+  record.fcr_resolved = !escalated
+  record.escalated = escalated
+  record.transferred = false
+  record.escalated_to_human = escalated
+  record.escalated_from_sienna = false
+  record.linked_contact_id = followUpId || null
+  record.is_repeat_contact = !escalated && rand() < 0.1
+  record.critical_failure = false
+  record.critical_failure_category = null
+  record.qa_score = null
+  record.qa_pass = null
+  record.auto_fail_reasons = []
+  record.key_strengths = escalated ? [] : ['Sienna resolved a routine email with structured order context.']
+  record.key_gaps = escalated ? ['Policy judgment required human escalation.'] : []
+  record.questions_met = 0
+  record.questions_not_met = 0
+  record.section_scores = []
+  record.question_evaluations = []
+  record.micro_coaching_action = null
+  record.formal_coaching_flag = false
+  updateCsat(record, escalated ? 3.1 + rand() * 0.4 : 3.8 + rand() * 0.4)
+  record.email_thread = makeSiennaEmailThread(record, escalated, followUpId)
+  record.transcript = renderEmailThread(record.email_thread)
+  record.narrative_summary = `Sienna AI email contact regarding order ${record.order_number} (${record.driver_subcategory}). `
+    + (escalated ? `Escalated to human follow-up ${followUpId} because policy judgment was required.` : 'Resolved automatically by Sienna.')
+}
+
+function convertFollowUpRecord(record, siennaRecord) {
+  sanitizeHumanSource(record, 'email_human')
+  setDriver(record, {
+    l1: siennaRecord.driver_category,
+    l2: siennaRecord.driver_subcategory,
+  })
+  record.merchant_name = siennaRecord.merchant_name
+  record.merchant_contact = siennaRecord.merchant_contact
+  record.order_number = siennaRecord.order_number
+  record.linked_contact_id = siennaRecord.call_id
+  record.escalated_from_sienna = true
+  record.escalated_to_human = false
+  record.is_repeat_contact = true
+  record.escalated = true
+  record.transferred = false
+  const weekIdx = weekIndexForDate(record.call_date)
+  const params = weekParams(weekIdx, record.driver_category, record.driver_subcategory, record.agent_name)
+  record.transcript = buildTranscript({
+    agent: record.agent_name,
+    order: record.order_number,
+    subcategory: record.driver_subcategory,
+    l1: record.driver_category,
+    isHighRisk: params.isHighRisk,
+    cfType: null,
+    channel: 'email',
+    phase: params.phase,
+    isRepeat: true,
+    fcr: record.fcr_resolved,
+    escalated: record.escalated,
+  })
+  record.narrative_summary = `Human email follow-up for Sienna escalation ${siennaRecord.call_id}; same customer and ${record.driver_subcategory} driver. `
+    + (record.fcr_resolved ? 'Human agent resolved the policy exception.' : 'Human follow-up remains complex and may need another action.')
+}
+
+function assignSources(records) {
+  const featuredCfIds = new Set(FEATURED_CF_CALLS.map((f) => f.callId))
+  const siennaCount = SOURCE_TARGETS.email_sienna
+  const followUpCount = Math.round(siennaCount * SIENNA_ESCALATION_RATE)
+  const safeCandidates = shuffle(records
+    .map((r, i) => ({ r, i }))
+    .filter(({ r }) => !featuredCfIds.has(r.call_id) && !r.critical_failure))
+
+  const siennaItems = safeCandidates.slice(0, siennaCount)
+  const siennaIndexSet = new Set(siennaItems.map(({ i }) => i))
+  const followUpItems = safeCandidates.filter(({ i }) => !siennaIndexSet.has(i)).slice(0, followUpCount)
+  const followUpIndexSet = new Set(followUpItems.map(({ i }) => i))
+
+  followUpItems.forEach(({ r }) => sanitizeHumanSource(r, 'email_human'))
+
+  const escalatedSienna = siennaItems.slice(0, followUpCount)
+  const resolvedSienna = siennaItems.slice(followUpCount)
+
+  escalatedSienna.forEach(({ r }, idx) => {
+    const followUp = followUpItems[idx].r
+    const driver = COMPLEX_SIENNA_DRIVERS[idx % COMPLEX_SIENNA_DRIVERS.length]
+    sanitizeSiennaRecord(r, driver, true, followUp.call_id)
+    convertFollowUpRecord(followUp, r)
+  })
+
+  resolvedSienna.forEach(({ r }, idx) => {
+    sanitizeSiennaRecord(r, SIMPLE_SIENNA_DRIVERS[idx % SIMPLE_SIENNA_DRIVERS.length], false, null)
+  })
+
+  const remainingSourceCounts = {
+    voice_human: SOURCE_TARGETS.voice_human,
+    email_human: SOURCE_TARGETS.email_human - followUpCount,
+    chat_human: SOURCE_TARGETS.chat_human,
+  }
+  const remainingSources = [
+    ...Array.from({ length: remainingSourceCounts.voice_human }, () => 'voice_human'),
+    ...Array.from({ length: remainingSourceCounts.email_human }, () => 'email_human'),
+    ...Array.from({ length: remainingSourceCounts.chat_human }, () => 'chat_human'),
+  ]
+  const remainingItems = shuffle(records
+    .map((r, i) => ({ r, i }))
+    .filter(({ i }) => !siennaIndexSet.has(i) && !followUpIndexSet.has(i)))
+
+  remainingItems.forEach(({ r }, idx) => sanitizeHumanSource(r, remainingSources[idx]))
+}
+
+function preferredFcrCandidates(records, source, desiredResolved) {
+  const subset = records.filter((r) => r.source === source)
+  if (source === 'email_sienna') {
+    return subset.filter((r) => !r.escalated_to_human)
+  }
+  const candidates = desiredResolved
+    ? subset.filter((r) => !r.fcr_resolved && !r.critical_failure)
+    : subset.filter((r) => r.fcr_resolved && !r.critical_failure)
+  const general = candidates.filter((r) => r.driver_category === 'General Support')
+  const generalIds = new Set(general.map((r) => r.call_id))
+  return [...general, ...candidates.filter((r) => !generalIds.has(r.call_id))]
+}
+
+function calibrateFcrBySource(records) {
+  for (const source of SOURCES) {
+    const subset = records.filter((r) => r.source === source)
+    const target = SOURCE_FCR_TARGETS[source]
+    if (source === 'email_sienna') {
+      subset.forEach((r) => {
+        r.fcr_resolved = false
+      })
+      const resolvedPool = shuffle(subset.filter((r) => !r.escalated_to_human))
+      resolvedPool.slice(0, target).forEach((r) => {
+        r.fcr_resolved = true
+      })
+      continue
+    }
+
+    let count = subset.filter((r) => r.fcr_resolved).length
+    if (count > target) {
+      for (const r of preferredFcrCandidates(records, source, false).slice(0, count - target)) {
+        r.fcr_resolved = false
+      }
+    } else if (count < target) {
+      for (const r of preferredFcrCandidates(records, source, true).slice(0, target - count)) {
+        r.fcr_resolved = true
+      }
+    }
+  }
+}
+
+function calibrateSourceCsat(records, source, targetMean) {
+  const subset = records.filter((r) => r.source === source)
+  if (!subset.length) return
+  const targetTenths = Math.round(targetMean * 10 * subset.length)
+  const currentMean = subset.reduce((s, r) => s + r.predicted_csat_score, 0) / subset.length
+  const shift = targetMean - currentMean
+  subset.forEach((r) => updateCsat(r, r.predicted_csat_score + shift))
+
+  let currentTenths = subset.reduce((s, r) => s + Math.round(r.predicted_csat_score * 10), 0)
+  const direction = currentTenths < targetTenths ? 1 : -1
+  const ordered = shuffle(subset.filter((r) => direction > 0 ? r.predicted_csat_score < 5 : r.predicted_csat_score > 1))
+  let idx = 0
+  while (currentTenths !== targetTenths && ordered.length) {
+    const r = ordered[idx % ordered.length]
+    const next = Math.max(1, Math.min(5, r.predicted_csat_score + direction * 0.1))
+    if (next !== r.predicted_csat_score) {
+      updateCsat(r, next)
+      currentTenths += direction
+    }
+    idx += 1
+    if (idx > ordered.length * 45) break
+  }
+}
+
+function calibrateCsatBySource(records) {
+  for (const source of SOURCES) {
+    calibrateSourceCsat(records, source, SOURCE_CSAT_TARGETS[source])
+  }
 }
 
 // --- Generate ---
@@ -834,9 +1175,11 @@ for (const featured of FEATURED_CF_CALLS) {
   records[idx] = rebuilt
 }
 
+assignSources(records)
+
 // Calibrate CSAT < 3 ~18%
 const lowCsatTarget = Math.round(TOTAL * 0.18)
-let lowIndices = records.map((r, i) => ({ i, csat: r.predicted_csat_score })).filter((x) => x.csat < 3).map((x) => x.i)
+let lowIndices = records.map((r, i) => ({ i, csat: r.predicted_csat_score })).filter((x) => !isSiennaRecord(records[x.i]) && x.csat < 3).map((x) => x.i)
 
 if (lowIndices.length > lowCsatTarget) {
   const toRaise = lowIndices
@@ -851,58 +1194,62 @@ if (lowIndices.length > lowCsatTarget) {
 lowIndices = records.map((r, i) => (r.predicted_csat_score < 3 ? i : -1)).filter((i) => i >= 0)
 for (const i of records.map((_, idx) => idx)) {
   if (lowIndices.length >= lowCsatTarget) break
-  if (records[i].predicted_csat_score >= 3 && isHighRiskRecord(records[i])) {
+  if (!isSiennaRecord(records[i]) && records[i].predicted_csat_score >= 3 && isHighRiskRecord(records[i])) {
     records[i].predicted_csat_score = Math.round((2 + rand() * 0.9) * 10) / 10
     records[i].predicted_csat_label = records[i].predicted_csat_score < 2.5 ? 'Very Dissatisfied' : 'Dissatisfied'
     lowIndices.push(i)
   }
 }
 
-const currentAht = records.reduce((s, r) => s + r.call_handling_time, 0) / records.length
+const humanAhtRecords = records.filter((r) => !isSiennaRecord(r) && typeof r.call_handling_time === 'number')
+const currentAht = humanAhtRecords.reduce((s, r) => s + r.call_handling_time, 0) / humanAhtRecords.length
 const ahtScale = 348 / currentAht
-for (const r of records) {
+for (const r of humanAhtRecords) {
   r.call_handling_time = Math.round(r.call_handling_time * ahtScale)
   if (isHighRiskRecord(r)) {
     r.call_handling_time = Math.round(r.call_handling_time * 1.08)
   }
 }
+const finalHumanAht = humanAhtRecords.reduce((s, r) => s + r.call_handling_time, 0) / humanAhtRecords.length
+const finalAhtScale = 348 / finalHumanAht
+for (const r of humanAhtRecords) {
+  r.call_handling_time = Math.round(r.call_handling_time * finalAhtScale)
+}
 
 const repeatTarget = Math.round(TOTAL * 0.23)
 let repeatCount = records.filter((r) => r.is_repeat_contact).length
 if (repeatCount < repeatTarget) {
-  const candidates = records.filter((r) => !r.is_repeat_contact && isHighRiskRecord(r)).sort(() => rand() - 0.5)
+  const candidates = records.filter((r) => !isSiennaRecord(r) && !r.is_repeat_contact && isHighRiskRecord(r)).sort(() => rand() - 0.5)
   for (const r of candidates.slice(0, repeatTarget - repeatCount)) {
     r.is_repeat_contact = true
   }
 }
+if (repeatCount > repeatTarget) {
+  const candidates = records.filter((r) => !isSiennaRecord(r) && r.is_repeat_contact && !isHighRiskRecord(r)).sort(() => rand() - 0.5)
+  for (const r of candidates.slice(0, repeatCount - repeatTarget)) {
+    r.is_repeat_contact = false
+  }
+}
 
 for (const r of records) {
-  if (COACHED_AGENTS.includes(r.agent_name) && isHighRiskRecord(r) && r.call_date >= '2026-05-18') {
+  if (!isSiennaRecord(r) && COACHED_AGENTS.includes(r.agent_name) && isHighRiskRecord(r) && r.call_date >= '2026-05-18') {
     if (rand() < 0.75) {
       r.fcr_resolved = true
-      r.predicted_csat_score = Math.round(Math.max(r.predicted_csat_score, 3.5) * 10) / 10
+      updateCsat(r, Math.max(r.predicted_csat_score, 3.5))
     }
   }
 }
 
-const fcrCount = records.filter((r) => r.fcr_resolved).length
-const targetFcr = Math.round(TOTAL * 0.61)
-if (fcrCount > targetFcr) {
-  const toFlip = records.filter((r) => r.fcr_resolved && r.driver_category === 'General Support').slice(0, fcrCount - targetFcr)
-  for (const r of toFlip) r.fcr_resolved = false
-} else if (fcrCount < targetFcr) {
-  const toFlip = records.filter((r) => !r.fcr_resolved && r.driver_category === 'General Support').slice(0, targetFcr - fcrCount)
-  for (const r of toFlip) r.fcr_resolved = true
-}
+calibrateFcrBySource(records)
 
 const escTarget = Math.round(TOTAL * 0.092)
 let escCount = records.filter((r) => r.escalated).length
 if (escCount > escTarget) {
-  for (const r of records.filter((r) => r.escalated && r.driver_category === 'General Support').slice(0, escCount - escTarget)) {
+  for (const r of records.filter((r) => !isSiennaRecord(r) && r.escalated && r.driver_category === 'General Support').slice(0, escCount - escTarget)) {
     r.escalated = false
   }
 } else if (escCount < escTarget) {
-  for (const r of records.filter((r) => !r.escalated && isHighRiskRecord(r)).slice(0, escTarget - escCount)) {
+  for (const r of records.filter((r) => !isSiennaRecord(r) && !r.escalated && isHighRiskRecord(r)).slice(0, escTarget - escCount)) {
     r.escalated = true
   }
 }
@@ -910,20 +1257,16 @@ if (escCount > escTarget) {
 const trTarget = Math.round(TOTAL * 0.141)
 let trCount = records.filter((r) => r.transferred).length
 if (trCount > trTarget) {
-  for (const r of records.filter((r) => r.transferred && !r.escalated && r.driver_category === 'General Support').slice(0, trCount - trTarget)) {
+  for (const r of records.filter((r) => !isSiennaRecord(r) && r.transferred && !r.escalated && r.driver_category === 'General Support').slice(0, trCount - trTarget)) {
     r.transferred = false
   }
 } else if (trCount < trTarget) {
-  for (const r of records.filter((r) => !r.transferred && !r.escalated && isHighRiskRecord(r)).slice(0, trTarget - trCount)) {
+  for (const r of records.filter((r) => !isSiennaRecord(r) && !r.transferred && !r.escalated && isHighRiskRecord(r)).slice(0, trTarget - trCount)) {
     r.transferred = true
   }
 }
 
-const csatAvg = records.reduce((s, r) => s + r.predicted_csat_score, 0) / records.length
-const csatShift = 3.6 - csatAvg
-for (const r of records) {
-  r.predicted_csat_score = Math.max(1, Math.min(5, Math.round((r.predicted_csat_score + csatShift) * 10) / 10))
-}
+calibrateCsatBySource(records)
 
 const FEATURED_CF_IDS = new Set(FEATURED_CF_CALLS.map((f) => f.callId))
 
@@ -956,7 +1299,7 @@ for (let w = 0; w < WEEKS; w++) {
   const target = CF_WEEKLY_TARGET[w]
   const inWeek = records.filter((r) => r.call_date >= wb.start && r.call_date <= wb.end)
 
-  const refreshCfList = () => inWeek.filter((r) => r.critical_failure)
+  const refreshCfList = () => inWeek.filter((r) => !isSiennaRecord(r) && r.critical_failure)
   let cfList = refreshCfList()
 
   while (cfList.length > target) {
@@ -968,7 +1311,7 @@ for (let w = 0; w < WEEKS; w++) {
 
   let typeIdx = 0
   while (cfList.length < target) {
-    const pool = inWeek.filter((r) => !r.critical_failure && !FEATURED_CF_IDS.has(r.call_id))
+    const pool = inWeek.filter((r) => !isSiennaRecord(r) && !r.critical_failure && !FEATURED_CF_IDS.has(r.call_id))
     const candidate = pool.find(isHighRiskRecord) || pool[0]
     if (!candidate) break
     applyCriticalFlag(candidate, CF_TYPES[typeIdx % CF_TYPES.length].id)
@@ -976,6 +1319,9 @@ for (let w = 0; w < WEEKS; w++) {
     cfList = refreshCfList()
   }
 }
+
+calibrateFcrBySource(records)
+calibrateCsatBySource(records)
 
 function aggregateDrivers(data) {
   const n = data.length
@@ -990,7 +1336,7 @@ function aggregateDrivers(data) {
       volume: subset.length,
       share: Math.round((subset.length / n) * 1000) / 10,
       fcr: Math.round((subset.filter((r) => r.fcr_resolved).length / subset.length) * 1000) / 10,
-      aht: Math.round(subset.reduce((s, r) => s + r.call_handling_time, 0) / subset.length),
+      aht: Math.round(subset.filter((r) => typeof r.call_handling_time === 'number').reduce((s, r) => s + r.call_handling_time, 0) / (subset.filter((r) => typeof r.call_handling_time === 'number').length || 1)),
       esc: Math.round((esc / subset.length) * 1000) / 10,
       drivers: {},
     }
@@ -1003,7 +1349,7 @@ function aggregateDrivers(data) {
         volume: sub.length,
         share: Math.round((sub.length / subset.length) * 1000) / 10,
         fcr: Math.round((sub.filter((r) => r.fcr_resolved).length / sub.length) * 1000) / 10,
-        aht: Math.round(sub.reduce((s, r) => s + r.call_handling_time, 0) / sub.length),
+        aht: Math.round(sub.filter((r) => typeof r.call_handling_time === 'number').reduce((s, r) => s + r.call_handling_time, 0) / (sub.filter((r) => typeof r.call_handling_time === 'number').length || 1)),
         esc: Math.round((subEsc / sub.length) * 1000) / 10,
       }
       byL1[l1].drivers[l2] = row
@@ -1015,7 +1361,10 @@ function aggregateDrivers(data) {
 
 function aggregate(data) {
   const n = data.length
-  const avg = (arr) => arr.reduce((a, b) => a + b, 0) / arr.length
+  const avg = (arr) => {
+    const values = arr.filter((v) => typeof v === 'number' && !Number.isNaN(v))
+    return values.length ? values.reduce((a, b) => a + b, 0) / values.length : 0
+  }
   const aht = avg(data.map((r) => r.call_handling_time))
   const fcr = (data.filter((r) => r.fcr_resolved).length / n) * 100
   const csat = avg(data.map((r) => r.predicted_csat_score))
@@ -1059,6 +1408,24 @@ function aggregate(data) {
     byChannel[ch] = data.filter((r) => r.channel === ch).length / n
   }
 
+  const bySource = {}
+  for (const source of SOURCES) {
+    const subset = data.filter((r) => r.source === source)
+    bySource[source] = {
+      label: sourceLabel(source),
+      volume: subset.length,
+      share: subset.length ? (subset.length / n) * 100 : 0,
+      csat: avg(subset.map((r) => r.predicted_csat_score)),
+      fcr: subset.length ? (subset.filter((r) => r.fcr_resolved).length / subset.length) * 100 : 0,
+      rcr: subset.length ? (subset.filter((r) => r.is_repeat_contact).length / subset.length) * 100 : 0,
+      aht: avg(subset.map((r) => r.call_handling_time)),
+      responseTimeMinutes: avg(subset.map((r) => r.response_time_minutes)),
+      escalationToHuman: source === 'email_sienna' && subset.length
+        ? (subset.filter((r) => r.escalated_to_human).length / subset.length) * 100
+        : null,
+    }
+  }
+
   const coachedReturnsFcr = {}
   for (const agent of COACHED_AGENTS) {
     const early = data.filter((r) => r.agent_name === agent && isHighRiskRecord(r) && r.call_date <= '2026-05-03')
@@ -1083,30 +1450,169 @@ function aggregate(data) {
       count: lowRisk.length,
       fcr: lowRisk.length ? (lowRisk.filter((r) => r.fcr_resolved).length / lowRisk.length) * 100 : 0,
     },
-    byWeek, byChannel, coachedReturnsFcr, driverStats,
+    byWeek, byChannel, bySource, coachedReturnsFcr, driverStats,
+  }
+}
+
+function round1(v) {
+  return Math.round(v * 10) / 10
+}
+
+function round2(v) {
+  return Math.round(v * 100) / 100
+}
+
+function topSourceDrivers(data, source) {
+  const counts = new Map()
+  data.filter((r) => r.source === source).forEach((r) => {
+    const key = r.driver_subcategory
+    counts.set(key, (counts.get(key) || 0) + 1)
+  })
+  return [...counts.entries()]
+    .sort((a, b) => b[1] - a[1])
+    .slice(0, 5)
+    .map(([name, volume]) => ({ name, volume }))
+}
+
+function sourceWeekly(data, source) {
+  return WEEK_BOUNDARIES.map((w) => {
+    const subset = data.filter((r) => r.source === source && r.call_date >= w.start && r.call_date <= w.end)
+    const avgCsat = subset.length ? subset.reduce((s, r) => s + r.predicted_csat_score, 0) / subset.length : 0
+    return {
+      week: w.label,
+      volume: subset.length,
+      csat: round2(avgCsat),
+      fcr: subset.length ? round1((subset.filter((r) => r.fcr_resolved).length / subset.length) * 100) : 0,
+    }
+  })
+}
+
+function buildDerivedKpis(data, stats) {
+  const sourceBlocks = {}
+  for (const source of SOURCES) {
+    const sourceStats = stats.bySource[source]
+    const weekly = sourceWeekly(data, source)
+    sourceBlocks[source] = {
+      ...sourceStats,
+      share: round1(sourceStats.share),
+      csat: round2(sourceStats.csat),
+      fcr: round1(sourceStats.fcr),
+      rcr: round1(sourceStats.rcr),
+      aht: Math.round(sourceStats.aht),
+      responseTimeMinutes: round1(sourceStats.responseTimeMinutes),
+      escalationToHuman: sourceStats.escalationToHuman == null ? null : round1(sourceStats.escalationToHuman),
+      weekly: {
+        csat: weekly.map((w) => w.csat),
+        fcr: weekly.map((w) => w.fcr),
+      },
+      topDrivers: topSourceDrivers(data, source),
+    }
+  }
+
+  return {
+    overall: {
+      volume: stats.n,
+      aht: Math.round(stats.aht),
+      fcr: round1(stats.fcr),
+      csat: round2(stats.csat),
+      rcr: round1(stats.rcr),
+      esc: round1(stats.er),
+      tr: round1(stats.tr),
+      repeatContacts: Math.round((stats.rcr / 100) * stats.n),
+      unnecessaryEscalations: Math.round((stats.er / 100) * stats.n),
+    },
+    trend: {
+      aht: stats.byWeek.map((w) => Math.round(w.aht)),
+      fcr: stats.byWeek.map((w) => round1(w.fcr)),
+      csat: stats.byWeek.map((w) => round2(w.csat)),
+      esc: stats.byWeek.map((w) => round1(data.filter((r) => r.call_date >= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].start && r.call_date <= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].end && r.escalated).length / (data.filter((r) => r.call_date >= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].start && r.call_date <= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].end).length || 1) * 100)),
+      er: stats.byWeek.map((w) => round1(data.filter((r) => r.call_date >= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].start && r.call_date <= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].end && r.escalated).length / (data.filter((r) => r.call_date >= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].start && r.call_date <= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].end).length || 1) * 100)),
+      tr: stats.byWeek.map((w) => round1(data.filter((r) => r.call_date >= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].start && r.call_date <= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].end && r.transferred).length / (data.filter((r) => r.call_date >= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].start && r.call_date <= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].end).length || 1) * 100)),
+      rcr: stats.byWeek.map((w) => round1(data.filter((r) => r.call_date >= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].start && r.call_date <= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].end && r.is_repeat_contact).length / (data.filter((r) => r.call_date >= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].start && r.call_date <= WEEK_BOUNDARIES[stats.byWeek.indexOf(w)].end).length || 1) * 100)),
+    },
+    returns: {
+      aht: stats.byWeek.map((w) => Math.round(w.returnsAht)),
+      fcr: stats.byWeek.map((w) => round1(w.returnsFcr)),
+    },
+    cfWeekly: stats.byWeek.map((w) => w.cf),
+    sources: sourceBlocks,
   }
 }
 
 const stats = aggregate(records)
+const derivedKpis = buildDerivedKpis(records, stats)
 
 const errors = []
 if (records.length !== TOTAL) errors.push(`Count ${records.length} !== ${TOTAL}`)
 if (Math.abs(stats.csatLow - 18) > 3) errors.push(`CSAT<3 ${stats.csatLow.toFixed(1)}% not ~18%`)
 if (stats.highRisk.fcr >= stats.lowRisk.fcr) errors.push('High-risk FCR should be worst')
+for (const source of SOURCES) {
+  const sourceCount = records.filter((r) => r.source === source).length
+  if (sourceCount !== SOURCE_TARGETS[source]) {
+    errors.push(`${source} count ${sourceCount} !== ${SOURCE_TARGETS[source]}`)
+  }
+  const sourceStats = stats.bySource[source]
+  if (Math.abs(sourceStats.fcr - (SOURCE_FCR_TARGETS[source] / SOURCE_TARGETS[source]) * 100) > 0.15) {
+    errors.push(`${source} FCR ${sourceStats.fcr.toFixed(1)} off target`)
+  }
+  if (Math.abs(sourceStats.csat - SOURCE_CSAT_TARGETS[source]) > 0.01) {
+    errors.push(`${source} CSAT ${sourceStats.csat.toFixed(2)} off target`)
+  }
+}
+const siennaRecords = records.filter(isSiennaRecord)
+const siennaEscalated = siennaRecords.filter((r) => r.escalated_to_human)
+if (Math.abs(siennaEscalated.length / siennaRecords.length - SIENNA_ESCALATION_RATE) > 0.001) {
+  errors.push(`Sienna escalation rate ${(siennaEscalated.length / siennaRecords.length * 100).toFixed(1)}% not 12%`)
+}
+if (siennaRecords.some((r) => r.agent_name || r.critical_failure || r.micro_coaching_action || r.formal_coaching_flag || r.qa_score != null)) {
+  errors.push('Sienna purity failed: agent, QA, CF, or coaching attribution present')
+}
+for (const r of siennaEscalated) {
+  const followUp = records.find((candidate) => candidate.call_id === r.linked_contact_id)
+  if (!followUp) {
+    errors.push(`Missing Sienna follow-up for ${r.call_id}`)
+    continue
+  }
+  if (followUp.linked_contact_id !== r.call_id || followUp.source !== 'email_human' || !followUp.escalated_from_sienna) {
+    errors.push(`Broken Sienna link pair for ${r.call_id}`)
+  }
+  if (followUp.merchant_name !== r.merchant_name || followUp.driver_subcategory !== r.driver_subcategory) {
+    errors.push(`Mismatched Sienna pair context for ${r.call_id}`)
+  }
+}
+const weightedSourceFcr = SOURCES.reduce((s, source) => s + stats.bySource[source].fcr * stats.bySource[source].volume, 0) / TOTAL
+const weightedSourceCsat = SOURCES.reduce((s, source) => s + stats.bySource[source].csat * stats.bySource[source].volume, 0) / TOTAL
+if (Math.abs(weightedSourceFcr - stats.fcr) > 0.001) errors.push('Source-weighted FCR does not reconcile to overall FCR')
+if (Math.abs(weightedSourceCsat - stats.csat) > 0.001) errors.push('Source-weighted CSAT does not reconcile to overall CSAT')
+if (derivedKpis.overall.fcr !== 61.0 || derivedKpis.overall.csat !== 3.6) {
+  errors.push(`Overall KPI targets off: FCR ${derivedKpis.overall.fcr}, CSAT ${derivedKpis.overall.csat}`)
+}
 for (const agent of COACHED_AGENTS) {
   const c = stats.coachedReturnsFcr[agent]
   if (c.w7w8 <= c.w1w4) errors.push(`${agent} FCR not improved W7-W8 vs W1-W4`)
 }
 
 let shortTranscripts = 0
-for (const r of records) {
+for (const r of records.filter((record) => !isSiennaRecord(record))) {
   const lines = r.transcript.split('\n').filter(Boolean)
   const { total, agent: a, customer: c } = countTranscriptTurns(lines)
   if (total < 8 || a < 3 || c < 3) shortTranscripts++
 }
 if (shortTranscripts > 0) errors.push(`${shortTranscripts} transcripts below minimum length`)
 
-console.log('Dataset stats:', JSON.stringify({ n: stats.n, byL1: stats.byL1, driverStatsL1: Object.fromEntries(Object.entries(stats.driverStats.byL1).map(([k, v]) => [k, { volume: v.volume, share: v.share }])) }, null, 2))
+console.log('Dataset stats:', JSON.stringify({
+  n: stats.n,
+  overall: derivedKpis.overall,
+  bySource: Object.fromEntries(Object.entries(stats.bySource).map(([k, v]) => [k, {
+    volume: v.volume,
+    csat: round2(v.csat),
+    fcr: round1(v.fcr),
+    rcr: round1(v.rcr),
+    responseTimeMinutes: round1(v.responseTimeMinutes),
+    escalationToHuman: v.escalationToHuman == null ? null : round1(v.escalationToHuman),
+  }])),
+  driverStatsL1: Object.fromEntries(Object.entries(stats.driverStats.byL1).map(([k, v]) => [k, { volume: v.volume, share: v.share }])),
+}, null, 2))
 if (errors.length) {
   console.warn('Validation warnings:', errors)
 } else {
@@ -1114,6 +1620,8 @@ if (errors.length) {
 }
 
 mkdirSync(dirname(OUT), { recursive: true })
+mkdirSync(dirname(DERIVED_KPIS_OUT), { recursive: true })
 writeFileSync(OUT, JSON.stringify(records, null, 2))
 writeFileSync(STATS_OUT, JSON.stringify(stats, null, 2))
+writeFileSync(DERIVED_KPIS_OUT, JSON.stringify(derivedKpis, null, 2))
 console.log(`Wrote ${records.length} records to ${OUT}`)

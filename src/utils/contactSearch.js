@@ -1,4 +1,4 @@
-import { WEEK_BOUNDARIES } from '../data/contactSearchConstants'
+import { SOURCE_LABELS, WEEK_BOUNDARIES } from '../data/contactSearchConstants'
 
 export function getQaScoreCellClass(score, qaPass) {
   if (qaPass === false) return 'qa-pill-autofail'
@@ -12,6 +12,10 @@ export function formatQaScoreDisplay(score, qaPass) {
   if (qaPass === false) return 'AUTO-FAIL'
   if (score == null) return 'Pending QA'
   return score.toFixed(1)
+}
+
+export function formatSourceDisplay(source) {
+  return SOURCE_LABELS[source] || source || '-'
 }
 
 function qaSortValue(score, sortDir) {
@@ -70,13 +74,20 @@ export function sortCalls(calls, sortField, sortDir) {
       return a.call_date > b.call_date ? dir : a.call_date < b.call_date ? -dir : 0
     }
     if (sortField === 'agent_name') {
-      return a.agent_name > b.agent_name ? dir : a.agent_name < b.agent_name ? -dir : 0
+      const av = a.agent_name || 'Sienna AI'
+      const bv = b.agent_name || 'Sienna AI'
+      return av > bv ? dir : av < bv ? -dir : 0
     }
     if (sortField === 'call_id') {
       return a.call_id > b.call_id ? dir : a.call_id < b.call_id ? -dir : 0
     }
     if (sortField === 'call_category') {
       return a.call_category > b.call_category ? dir : a.call_category < b.call_category ? -dir : 0
+    }
+    if (sortField === 'source') {
+      const av = formatSourceDisplay(a.source)
+      const bv = formatSourceDisplay(b.source)
+      return av > bv ? dir : av < bv ? -dir : 0
     }
     return 0
   })
@@ -85,6 +96,7 @@ export function sortCalls(calls, sortField, sortDir) {
 export function filterCalls(calls, filters) {
   return calls
     .filter((c) => filters.agent === 'all' || c.agent_name === filters.agent)
+    .filter((c) => filters.source === 'all' || c.source === filters.source)
     .filter((c) => filters.category === 'all' || c.call_category === filters.category)
     .filter((c) => c.call_date >= filters.dateFrom && c.call_date <= filters.dateTo)
     .filter((c) => passesScoreFilter(c, filters.scoreFilter))
@@ -100,6 +112,7 @@ export function filterCalls(calls, filters) {
       const haystack = [
         c.call_id,
         c.agent_name,
+        formatSourceDisplay(c.source),
         c.merchant_name,
         c.merchant_contact,
         c.order_number,
@@ -107,6 +120,7 @@ export function filterCalls(calls, filters) {
         c.call_subcategory,
         c.transcript,
         c.narrative_summary,
+        ...(c.email_thread || []).map((item) => `${item.subject || ''} ${item.body || ''}`),
       ]
         .filter(Boolean)
         .join(' ')
@@ -116,5 +130,5 @@ export function filterCalls(calls, filters) {
 }
 
 export function uniqueSorted(values) {
-  return [...new Set(values)].sort((a, b) => a.localeCompare(b))
+  return [...new Set(values.filter(Boolean))].sort((a, b) => a.localeCompare(b))
 }

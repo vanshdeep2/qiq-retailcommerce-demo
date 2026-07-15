@@ -1,570 +1,616 @@
 {
   "n": 10000,
-  "aht": 359.1104,
+  "aht": 347.99043956043954,
   "fcr": 61,
-  "csat": 3.641420000000007,
+  "csat": 3.5984000000000074,
   "rcr": 23,
   "er": 9.2,
   "tr": 14.099999999999998,
-  "csatLow": 15.22,
+  "csatLow": 16.41,
   "byL1": {
     "Account & Access": {
-      "count": 982,
-      "aht": 290.67820773930754,
-      "fcr": 78.00407331975559,
-      "csat": 4.002749490835036,
-      "rcr": 10.285132382892057
+      "count": 885,
+      "aht": 279.0621468926554,
+      "fcr": 73.5593220338983,
+      "csat": 3.935254237288139,
+      "rcr": 11.525423728813559
     },
     "Billing & Payments": {
-      "count": 2693,
-      "aht": 392.0519866320089,
-      "fcr": 58.48496101002599,
-      "csat": 3.411734125510583,
-      "rcr": 31.1548458967694
+      "count": 2852,
+      "aht": 382.6674727932285,
+      "fcr": 61.430575035063114,
+      "csat": 3.3890603085554076,
+      "rcr": 30.64516129032258
     },
     "Orders & Transactions": {
-      "count": 3025,
-      "aht": 394.8502479338843,
-      "fcr": 59.20661157024794,
-      "csat": 3.3908429752066223,
-      "rcr": 31.537190082644628
+      "count": 3207,
+      "aht": 379.81770098730607,
+      "fcr": 62.114125350795135,
+      "csat": 3.40021827252885,
+      "rcr": 30.901153726223885
     },
     "Service Delivery": {
-      "count": 1700,
-      "aht": 348.3235294117647,
-      "fcr": 68.47058823529412,
-      "csat": 3.920117647058824,
-      "rcr": 12
+      "count": 1671,
+      "aht": 335.0006609385327,
+      "fcr": 69.35966487133453,
+      "csat": 3.896888090963487,
+      "rcr": 11.6098144823459
     },
     "Product Support": {
-      "count": 842,
-      "aht": 289.4809976247031,
-      "fcr": 76.72209026128266,
-      "csat": 4.004156769596205,
-      "rcr": 12.589073634204276
+      "count": 708,
+      "aht": 279.05649717514126,
+      "fcr": 73.1638418079096,
+      "csat": 3.9135593220339007,
+      "rcr": 10.028248587570623
     },
     "General Support": {
-      "count": 758,
-      "aht": 289.63984168865437,
-      "fcr": 20.844327176781004,
-      "csat": 3.961345646437999,
-      "rcr": 12.66490765171504
+      "count": 677,
+      "aht": 278.80945347119643,
+      "fcr": 4.13589364844904,
+      "csat": 3.912407680945349,
+      "rcr": 10.044313146233383
     }
   },
   "byQueue": {
     "Account & Access": {
-      "count": 982,
-      "aht": 290.67820773930754,
-      "fcr": 78.00407331975559,
-      "csat": 4.002749490835036,
-      "rcr": 10.285132382892057
+      "count": 885,
+      "aht": 279.0621468926554,
+      "fcr": 73.5593220338983,
+      "csat": 3.935254237288139,
+      "rcr": 11.525423728813559
     },
     "Billing & Payments": {
-      "count": 2693,
-      "aht": 392.0519866320089,
-      "fcr": 58.48496101002599,
-      "csat": 3.411734125510583,
-      "rcr": 31.1548458967694
+      "count": 2852,
+      "aht": 382.6674727932285,
+      "fcr": 61.430575035063114,
+      "csat": 3.3890603085554076,
+      "rcr": 30.64516129032258
     },
     "Orders & Transactions": {
-      "count": 3025,
-      "aht": 394.8502479338843,
-      "fcr": 59.20661157024794,
-      "csat": 3.3908429752066223,
-      "rcr": 31.537190082644628
+      "count": 3207,
+      "aht": 379.81770098730607,
+      "fcr": 62.114125350795135,
+      "csat": 3.40021827252885,
+      "rcr": 30.901153726223885
     },
     "Service Delivery": {
-      "count": 1700,
-      "aht": 348.3235294117647,
-      "fcr": 68.47058823529412,
-      "csat": 3.920117647058824,
-      "rcr": 12
+      "count": 1671,
+      "aht": 335.0006609385327,
+      "fcr": 69.35966487133453,
+      "csat": 3.896888090963487,
+      "rcr": 11.6098144823459
     },
     "Product Support": {
-      "count": 842,
-      "aht": 289.4809976247031,
-      "fcr": 76.72209026128266,
-      "csat": 4.004156769596205,
-      "rcr": 12.589073634204276
+      "count": 708,
+      "aht": 279.05649717514126,
+      "fcr": 73.1638418079096,
+      "csat": 3.9135593220339007,
+      "rcr": 10.028248587570623
     },
     "General Support": {
-      "count": 758,
-      "aht": 289.63984168865437,
-      "fcr": 20.844327176781004,
-      "csat": 3.961345646437999,
-      "rcr": 12.66490765171504
+      "count": 677,
+      "aht": 278.80945347119643,
+      "fcr": 4.13589364844904,
+      "csat": 3.912407680945349,
+      "rcr": 10.044313146233383
     }
   },
   "highRisk": {
-    "count": 3125,
-    "aht": 479.7456,
-    "fcr": 46.08
+    "count": 3207,
+    "aht": 459.4071476285905,
+    "fcr": 50.545681322107896
   },
   "lowRisk": {
-    "count": 6875,
-    "fcr": 67.78181818181818
+    "count": 6793,
+    "fcr": 65.935521860739
   },
   "byWeek": [
     {
       "week": "W1",
-      "aht": 359.6425702811245,
-      "fcr": 59.196787148594375,
-      "csat": 3.719839357429726,
+      "aht": 345.34485896269337,
+      "fcr": 56.546184738955816,
+      "csat": 3.708995983935748,
       "cf": 77,
-      "returnsAht": 474.8722358722359,
-      "returnsFcr": 43.24324324324324
+      "returnsAht": 453.50276243093924,
+      "returnsFcr": 45.25
     },
     {
       "week": "W2",
-      "aht": 361.1461661341853,
-      "fcr": 58.54632587859425,
-      "csat": 3.7179712460063925,
+      "aht": 353.5108108108108,
+      "fcr": 60.70287539936102,
+      "csat": 3.5936900958466484,
       "cf": 82,
-      "returnsAht": 495.0891891891892,
-      "returnsFcr": 43.513513513513516
+      "returnsAht": 475.9164420485175,
+      "returnsFcr": 46.58536585365854
     },
     {
       "week": "W3",
-      "aht": 370.9328537170264,
-      "fcr": 56.594724220623505,
-      "csat": 3.5657074340527672,
+      "aht": 360.5109090909091,
+      "fcr": 60.03197442046363,
+      "csat": 3.4562749800159893,
       "cf": 105,
-      "returnsAht": 515.7088607594936,
-      "returnsFcr": 38.9873417721519
+      "returnsAht": 492.3524804177546,
+      "returnsFcr": 46.71361502347418
     },
     {
       "week": "W4",
-      "aht": 383.98641087130295,
-      "fcr": 56.19504396482814,
-      "csat": 3.3972022382094336,
+      "aht": 374.5994764397906,
+      "fcr": 56.11510791366906,
+      "csat": 3.3704236610711416,
       "cf": 123,
-      "returnsAht": 532.8260869565217,
-      "returnsFcr": 36.38443935926773
+      "returnsAht": 512.7119047619047,
+      "returnsFcr": 42.69406392694064
     },
     {
       "week": "W5",
-      "aht": 378.69624300559553,
-      "fcr": 56.19504396482814,
-      "csat": 3.521662669864115,
+      "aht": 369.5891891891892,
+      "fcr": 58.51318944844125,
+      "csat": 3.50935251798562,
       "cf": 59,
-      "returnsAht": 543.1131105398457,
-      "returnsFcr": 39.588688946015424
+      "returnsAht": 516.5534759358288,
+      "returnsFcr": 43.52078239608802
     },
     {
       "week": "W6",
-      "aht": 342.6144,
-      "fcr": 62.56,
-      "csat": 3.709680000000003,
+      "aht": 330.1318101933216,
+      "fcr": 65.36,
+      "csat": 3.7010400000000043,
       "cf": 45,
-      "returnsAht": 436.4308943089431,
-      "returnsFcr": 50.67750677506775
+      "returnsAht": 417.54128440366975,
+      "returnsFcr": 57.971014492753625
     },
     {
       "week": "W7",
-      "aht": 339.8016,
-      "fcr": 69.12,
-      "csat": 3.7524799999999976,
+      "aht": 327.3646649260226,
+      "fcr": 65.68,
+      "csat": 3.719360000000005,
       "cf": 32,
-      "returnsAht": 422.6818181818182,
-      "returnsFcr": 56.417112299465245
+      "returnsAht": 401.73497267759564,
+      "returnsFcr": 61.08247422680413
     },
     {
       "week": "W8",
-      "aht": 336.0168,
-      "fcr": 69.6,
-      "csat": 3.747360000000006,
+      "aht": 326.0040064102564,
+      "fcr": 65.03999999999999,
+      "csat": 3.7288800000000037,
       "cf": 41,
-      "returnsAht": 405.734375,
-      "returnsFcr": 61.979166666666664
+      "returnsAht": 394.0153452685422,
+      "returnsFcr": 63.42710997442455
     }
   ],
   "byChannel": {
-    "voice": 0.6599,
-    "email": 0.2127,
-    "chat": 0.1274
+    "voice": 0.65,
+    "email": 0.22,
+    "chat": 0.13
+  },
+  "bySource": {
+    "voice_human": {
+      "label": "Voice (Human)",
+      "volume": 6500,
+      "share": 65,
+      "csat": 3.5799999999999996,
+      "fcr": 60.353846153846156,
+      "rcr": 23.953846153846154,
+      "aht": 348.1956923076923,
+      "responseTimeMinutes": 0,
+      "escalationToHuman": null
+    },
+    "email_human": {
+      "label": "Email (Human)",
+      "volume": 1300,
+      "share": 13,
+      "csat": 3.500000000000002,
+      "fcr": 57.99999999999999,
+      "rcr": 29.230769230769234,
+      "aht": 349.04923076923075,
+      "responseTimeMinutes": 258.4215384615385,
+      "escalationToHuman": null
+    },
+    "email_sienna": {
+      "label": "Email (Sienna AI)",
+      "volume": 900,
+      "share": 9,
+      "csat": 3.900000000000003,
+      "fcr": 71,
+      "rcr": 9.222222222222221,
+      "aht": 0,
+      "responseTimeMinutes": 7.924444444444444,
+      "escalationToHuman": 12
+    },
+    "chat_human": {
+      "label": "Chat (Human)",
+      "volume": 1300,
+      "share": 13,
+      "csat": 3.580000000000004,
+      "fcr": 60.30769230769231,
+      "rcr": 21.53846153846154,
+      "aht": 345.9053846153846,
+      "responseTimeMinutes": 0,
+      "escalationToHuman": null
+    }
   },
   "coachedReturnsFcr": {
     "Lerato Nkosi": {
-      "w1w4": 34.831460674157306,
+      "w1w4": 26.666666666666668,
       "w7w8": 100
     },
     "Pieter Botha": {
-      "w1w4": 24.418604651162788,
-      "w7w8": 87.5
+      "w1w4": 41.75824175824176,
+      "w7w8": 100
     },
     "Busisiwe Maseko": {
-      "w1w4": 29.7029702970297,
+      "w1w4": 34.73684210526316,
       "w7w8": 100
     },
     "Ayanda Mbeki": {
-      "w1w4": 32.038834951456316,
-      "w7w8": 70
+      "w1w4": 42.857142857142854,
+      "w7w8": 100
     }
   },
   "driverStats": {
     "byL1": {
       "Account & Access": {
-        "volume": 982,
-        "share": 9.8,
-        "fcr": 78,
-        "aht": 291,
+        "volume": 885,
+        "share": 8.9,
+        "fcr": 73.6,
+        "aht": 279,
         "esc": 5.5,
         "drivers": {
           "Account Creation": {
             "name": "Account Creation",
-            "volume": 51,
-            "share": 5.2,
-            "fcr": 74.5,
-            "aht": 293,
-            "esc": 3.9
+            "volume": 54,
+            "share": 6.1,
+            "fcr": 68.5,
+            "aht": 284,
+            "esc": 5.6
           },
           "Password Reset": {
             "name": "Password Reset",
-            "volume": 247,
-            "share": 25.2,
-            "fcr": 79.8,
-            "aht": 292,
-            "esc": 4
+            "volume": 189,
+            "share": 21.4,
+            "fcr": 77.8,
+            "aht": 279,
+            "esc": 3.2
           },
           "Account Verification": {
             "name": "Account Verification",
-            "volume": 150,
-            "share": 15.3,
-            "fcr": 80,
-            "aht": 292,
-            "esc": 6.7
+            "volume": 159,
+            "share": 18,
+            "fcr": 78,
+            "aht": 281,
+            "esc": 6.3
           },
           "Account Lockout": {
             "name": "Account Lockout",
-            "volume": 92,
-            "share": 9.4,
-            "fcr": 80.4,
-            "aht": 287,
-            "esc": 3.3
+            "volume": 66,
+            "share": 7.5,
+            "fcr": 75.8,
+            "aht": 275,
+            "esc": 4.5
           },
           "Profile Updates": {
             "name": "Profile Updates",
-            "volume": 122,
-            "share": 12.4,
-            "fcr": 75.4,
-            "aht": 289,
-            "esc": 8.2
+            "volume": 123,
+            "share": 13.9,
+            "fcr": 67.5,
+            "aht": 281,
+            "esc": 5.7
           },
           "Account Deletion": {
             "name": "Account Deletion",
-            "volume": 44,
-            "share": 4.5,
-            "fcr": 75,
-            "aht": 293,
-            "esc": 4.5
+            "volume": 36,
+            "share": 4.1,
+            "fcr": 72.2,
+            "aht": 278,
+            "esc": 5.6
           },
           "Account & Login Issues": {
             "name": "Account & Login Issues",
-            "volume": 276,
-            "share": 28.1,
-            "fcr": 76.8,
-            "aht": 290,
-            "esc": 6.2
+            "volume": 258,
+            "share": 29.2,
+            "fcr": 71.3,
+            "aht": 278,
+            "esc": 7
           }
         }
       },
       "Billing & Payments": {
-        "volume": 2693,
-        "share": 26.9,
-        "fcr": 58.5,
-        "aht": 392,
-        "esc": 11.7,
+        "volume": 2852,
+        "share": 28.5,
+        "fcr": 61.4,
+        "aht": 383,
+        "esc": 11.4,
         "drivers": {
           "Billing & Refunds": {
             "name": "Billing & Refunds",
-            "volume": 666,
-            "share": 24.7,
-            "fcr": 43.8,
-            "aht": 482,
-            "esc": 17.1
+            "volume": 603,
+            "share": 21.1,
+            "fcr": 51.1,
+            "aht": 465,
+            "esc": 9.8
           },
           "Promo Codes": {
             "name": "Promo Codes",
-            "volume": 213,
-            "share": 7.9,
-            "fcr": 70.4,
-            "aht": 289,
-            "esc": 8.5
+            "volume": 163,
+            "share": 5.7,
+            "fcr": 74.8,
+            "aht": 280,
+            "esc": 7.4
           },
           "Invoice Requests": {
             "name": "Invoice Requests",
-            "volume": 148,
-            "share": 5.5,
-            "fcr": 68.2,
-            "aht": 290,
-            "esc": 2.7
+            "volume": 285,
+            "share": 10,
+            "fcr": 80.7,
+            "aht": 278,
+            "esc": 3.5
           },
           "Payment Method Issues": {
             "name": "Payment Method Issues",
-            "volume": 137,
-            "share": 5.1,
-            "fcr": 78.8,
-            "aht": 290,
-            "esc": 6.6
+            "volume": 122,
+            "share": 4.3,
+            "fcr": 73.8,
+            "aht": 286,
+            "esc": 7.4
           },
           "Payment Failure": {
             "name": "Payment Failure",
-            "volume": 249,
-            "share": 9.2,
-            "fcr": 75.5,
-            "aht": 289,
-            "esc": 5.6
+            "volume": 209,
+            "share": 7.3,
+            "fcr": 76.1,
+            "aht": 280,
+            "esc": 5.7
           },
           "Billing Inquiries": {
             "name": "Billing Inquiries",
-            "volume": 286,
-            "share": 10.6,
-            "fcr": 68.5,
-            "aht": 289,
-            "esc": 5.2
+            "volume": 250,
+            "share": 8.8,
+            "fcr": 77.6,
+            "aht": 277,
+            "esc": 8
           },
           "Refund Requests": {
             "name": "Refund Requests",
-            "volume": 778,
-            "share": 28.9,
-            "fcr": 48.2,
-            "aht": 480,
-            "esc": 15.9
+            "volume": 932,
+            "share": 32.7,
+            "fcr": 51.9,
+            "aht": 461,
+            "esc": 9.7
           },
           "Reimbursements": {
             "name": "Reimbursements",
-            "volume": 105,
-            "share": 3.9,
-            "fcr": 74.3,
-            "aht": 289,
-            "esc": 9.5
+            "volume": 81,
+            "share": 2.8,
+            "fcr": 76.5,
+            "aht": 281,
+            "esc": 3.7
           },
           "Promotions & Discounts": {
             "name": "Promotions & Discounts",
-            "volume": 67,
-            "share": 2.5,
-            "fcr": 76.1,
-            "aht": 292,
-            "esc": 4.5
+            "volume": 58,
+            "share": 2,
+            "fcr": 75.9,
+            "aht": 281,
+            "esc": 1.7
           },
           "Reimbursements & Adjustments": {
             "name": "Reimbursements & Adjustments",
-            "volume": 44,
-            "share": 1.6,
-            "fcr": 81.8,
-            "aht": 294,
-            "esc": 6.8
+            "volume": 149,
+            "share": 5.2,
+            "fcr": 39.6,
+            "aht": 312,
+            "esc": 73.8
           }
         }
       },
       "Orders & Transactions": {
-        "volume": 3025,
-        "share": 30.3,
-        "fcr": 59.2,
-        "aht": 395,
-        "esc": 12.1,
+        "volume": 3207,
+        "share": 32.1,
+        "fcr": 62.1,
+        "aht": 380,
+        "esc": 12.2,
         "drivers": {
           "Preorders & Backorders": {
             "name": "Preorders & Backorders",
-            "volume": 110,
-            "share": 3.6,
-            "fcr": 80.9,
-            "aht": 289,
-            "esc": 5.5
+            "volume": 100,
+            "share": 3.1,
+            "fcr": 79,
+            "aht": 278,
+            "esc": 8
           },
           "Duplicate Orders": {
             "name": "Duplicate Orders",
-            "volume": 159,
-            "share": 5.3,
-            "fcr": 79.2,
-            "aht": 287,
-            "esc": 5
+            "volume": 158,
+            "share": 4.9,
+            "fcr": 72.8,
+            "aht": 276,
+            "esc": 7.6
           },
           "Order Status": {
             "name": "Order Status",
-            "volume": 332,
-            "share": 11,
-            "fcr": 74.7,
-            "aht": 290,
-            "esc": 7.8
+            "volume": 451,
+            "share": 14.1,
+            "fcr": 76.5,
+            "aht": 278,
+            "esc": 4.2
           },
           "Order Placement": {
             "name": "Order Placement",
-            "volume": 227,
-            "share": 7.5,
-            "fcr": 74.9,
-            "aht": 291,
-            "esc": 7
+            "volume": 182,
+            "share": 5.7,
+            "fcr": 68.1,
+            "aht": 279,
+            "esc": 6.6
           },
           "Order Cancellations": {
             "name": "Order Cancellations",
-            "volume": 250,
-            "share": 8.3,
-            "fcr": 72.8,
-            "aht": 290,
-            "esc": 4
+            "volume": 231,
+            "share": 7.2,
+            "fcr": 74.9,
+            "aht": 279,
+            "esc": 6.5
           },
           "Order Issues": {
             "name": "Order Issues",
-            "volume": 551,
-            "share": 18.2,
-            "fcr": 47.4,
-            "aht": 483,
-            "esc": 17.8
+            "volume": 549,
+            "share": 17.1,
+            "fcr": 50.1,
+            "aht": 462,
+            "esc": 13.1
           },
           "Order Management": {
             "name": "Order Management",
-            "volume": 77,
-            "share": 2.5,
-            "fcr": 74,
-            "aht": 289,
-            "esc": 7.8
+            "volume": 234,
+            "share": 7.3,
+            "fcr": 81.2,
+            "aht": 281,
+            "esc": 1.3
           },
           "Order Modifications": {
             "name": "Order Modifications",
-            "volume": 189,
-            "share": 6.2,
-            "fcr": 77.2,
-            "aht": 290,
-            "esc": 4.8
+            "volume": 179,
+            "share": 5.6,
+            "fcr": 76.5,
+            "aht": 278,
+            "esc": 8.9
           },
           "Returns & Exchanges": {
             "name": "Returns & Exchanges",
-            "volume": 1130,
-            "share": 37.4,
-            "fcr": 45.3,
-            "aht": 477,
-            "esc": 16.5
+            "volume": 1123,
+            "share": 35,
+            "fcr": 49.3,
+            "aht": 453,
+            "esc": 20.7
           }
         }
       },
       "Service Delivery": {
-        "volume": 1700,
-        "share": 17,
-        "fcr": 68.5,
-        "aht": 348,
-        "esc": 5.8,
+        "volume": 1671,
+        "share": 16.7,
+        "fcr": 69.4,
+        "aht": 335,
+        "esc": 4.4,
         "drivers": {
           "Address Issues": {
             "name": "Address Issues",
-            "volume": 312,
-            "share": 18.4,
-            "fcr": 71.5,
-            "aht": 348,
-            "esc": 6.1
+            "volume": 286,
+            "share": 17.1,
+            "fcr": 69.6,
+            "aht": 335,
+            "esc": 5.9
           },
           "Courier/Driver Issues": {
             "name": "Courier/Driver Issues",
-            "volume": 199,
-            "share": 11.7,
-            "fcr": 69.8,
-            "aht": 349,
-            "esc": 4.5
+            "volume": 173,
+            "share": 10.4,
+            "fcr": 64.7,
+            "aht": 333,
+            "esc": 4.6
           },
           "Delivery Failures": {
             "name": "Delivery Failures",
-            "volume": 374,
-            "share": 22,
-            "fcr": 69,
-            "aht": 348,
-            "esc": 6.4
+            "volume": 324,
+            "share": 19.4,
+            "fcr": 71,
+            "aht": 335,
+            "esc": 4.3
           },
           "Escalations & Approvals": {
             "name": "Escalations & Approvals",
-            "volume": 164,
-            "share": 9.6,
-            "fcr": 62.8,
-            "aht": 350,
-            "esc": 4.9
+            "volume": 154,
+            "share": 9.2,
+            "fcr": 66.2,
+            "aht": 337,
+            "esc": 5.8
           },
           "Merchant Communication": {
             "name": "Merchant Communication",
-            "volume": 169,
-            "share": 9.9,
-            "fcr": 67.5,
-            "aht": 351,
-            "esc": 8.9
+            "volume": 133,
+            "share": 8,
+            "fcr": 72.2,
+            "aht": 335,
+            "esc": 6
           },
           "Shipping & Delivery": {
             "name": "Shipping & Delivery",
-            "volume": 482,
-            "share": 28.4,
-            "fcr": 67.8,
-            "aht": 348,
-            "esc": 4.8
+            "volume": 601,
+            "share": 36,
+            "fcr": 69.9,
+            "aht": 335,
+            "esc": 2.8
           }
         }
       },
       "Product Support": {
-        "volume": 842,
-        "share": 8.4,
-        "fcr": 76.7,
-        "aht": 289,
-        "esc": 5.5,
+        "volume": 708,
+        "share": 7.1,
+        "fcr": 73.2,
+        "aht": 279,
+        "esc": 6.4,
         "drivers": {
           "Missing/Incorrect Information": {
             "name": "Missing/Incorrect Information",
-            "volume": 374,
-            "share": 44.4,
-            "fcr": 79.4,
-            "aht": 290,
-            "esc": 6.1
+            "volume": 322,
+            "share": 45.5,
+            "fcr": 72.4,
+            "aht": 279,
+            "esc": 5.9
           },
           "Product Support": {
             "name": "Product Support",
-            "volume": 468,
-            "share": 55.6,
-            "fcr": 74.6,
-            "aht": 289,
-            "esc": 4.9
+            "volume": 386,
+            "share": 54.5,
+            "fcr": 73.8,
+            "aht": 279,
+            "esc": 6.7
           }
         }
       },
       "General Support": {
-        "volume": 758,
-        "share": 7.6,
-        "fcr": 20.8,
-        "aht": 290,
-        "esc": 5.7,
+        "volume": 677,
+        "share": 6.8,
+        "fcr": 4.1,
+        "aht": 279,
+        "esc": 5.5,
         "drivers": {
           "Complaints": {
             "name": "Complaints",
-            "volume": 157,
-            "share": 20.7,
-            "fcr": 17.2,
-            "aht": 292,
-            "esc": 5.7
+            "volume": 123,
+            "share": 18.2,
+            "fcr": 2.4,
+            "aht": 276,
+            "esc": 4.9
           },
           "Feedback": {
             "name": "Feedback",
-            "volume": 82,
-            "share": 10.8,
-            "fcr": 20.7,
-            "aht": 299,
-            "esc": 3.7
+            "volume": 86,
+            "share": 12.7,
+            "fcr": 1.2,
+            "aht": 279,
+            "esc": 3.5
           },
           "Follow-up Calls": {
             "name": "Follow-up Calls",
-            "volume": 155,
-            "share": 20.4,
-            "fcr": 23.9,
-            "aht": 287,
-            "esc": 7.7
+            "volume": 156,
+            "share": 23,
+            "fcr": 5.1,
+            "aht": 283,
+            "esc": 5.1
           },
           "Escalations": {
             "name": "Escalations",
-            "volume": 141,
-            "share": 18.6,
-            "fcr": 22.7,
-            "aht": 284,
-            "esc": 5
+            "volume": 107,
+            "share": 15.8,
+            "fcr": 7.5,
+            "aht": 276,
+            "esc": 8.4
           },
           "Policy Clarification": {
             "name": "Policy Clarification",
-            "volume": 223,
-            "share": 29.4,
-            "fcr": 20.2,
-            "aht": 290,
+            "volume": 205,
+            "share": 30.3,
+            "fcr": 3.9,
+            "aht": 279,
             "esc": 5.4
           }
         }
@@ -573,314 +619,314 @@
     "byL2": {
       "Account & Access::Account Creation": {
         "name": "Account Creation",
-        "volume": 51,
-        "share": 5.2,
-        "fcr": 74.5,
-        "aht": 293,
-        "esc": 3.9
+        "volume": 54,
+        "share": 6.1,
+        "fcr": 68.5,
+        "aht": 284,
+        "esc": 5.6
       },
       "Account & Access::Password Reset": {
         "name": "Password Reset",
-        "volume": 247,
-        "share": 25.2,
-        "fcr": 79.8,
-        "aht": 292,
-        "esc": 4
+        "volume": 189,
+        "share": 21.4,
+        "fcr": 77.8,
+        "aht": 279,
+        "esc": 3.2
       },
       "Account & Access::Account Verification": {
         "name": "Account Verification",
-        "volume": 150,
-        "share": 15.3,
-        "fcr": 80,
-        "aht": 292,
-        "esc": 6.7
+        "volume": 159,
+        "share": 18,
+        "fcr": 78,
+        "aht": 281,
+        "esc": 6.3
       },
       "Account & Access::Account Lockout": {
         "name": "Account Lockout",
-        "volume": 92,
-        "share": 9.4,
-        "fcr": 80.4,
-        "aht": 287,
-        "esc": 3.3
+        "volume": 66,
+        "share": 7.5,
+        "fcr": 75.8,
+        "aht": 275,
+        "esc": 4.5
       },
       "Account & Access::Profile Updates": {
         "name": "Profile Updates",
-        "volume": 122,
-        "share": 12.4,
-        "fcr": 75.4,
-        "aht": 289,
-        "esc": 8.2
+        "volume": 123,
+        "share": 13.9,
+        "fcr": 67.5,
+        "aht": 281,
+        "esc": 5.7
       },
       "Account & Access::Account Deletion": {
         "name": "Account Deletion",
-        "volume": 44,
-        "share": 4.5,
-        "fcr": 75,
-        "aht": 293,
-        "esc": 4.5
+        "volume": 36,
+        "share": 4.1,
+        "fcr": 72.2,
+        "aht": 278,
+        "esc": 5.6
       },
       "Account & Access::Account & Login Issues": {
         "name": "Account & Login Issues",
-        "volume": 276,
-        "share": 28.1,
-        "fcr": 76.8,
-        "aht": 290,
-        "esc": 6.2
+        "volume": 258,
+        "share": 29.2,
+        "fcr": 71.3,
+        "aht": 278,
+        "esc": 7
       },
       "Billing & Payments::Billing & Refunds": {
         "name": "Billing & Refunds",
-        "volume": 666,
-        "share": 24.7,
-        "fcr": 43.8,
-        "aht": 482,
-        "esc": 17.1
+        "volume": 603,
+        "share": 21.1,
+        "fcr": 51.1,
+        "aht": 465,
+        "esc": 9.8
       },
       "Billing & Payments::Promo Codes": {
         "name": "Promo Codes",
-        "volume": 213,
-        "share": 7.9,
-        "fcr": 70.4,
-        "aht": 289,
-        "esc": 8.5
+        "volume": 163,
+        "share": 5.7,
+        "fcr": 74.8,
+        "aht": 280,
+        "esc": 7.4
       },
       "Billing & Payments::Invoice Requests": {
         "name": "Invoice Requests",
-        "volume": 148,
-        "share": 5.5,
-        "fcr": 68.2,
-        "aht": 290,
-        "esc": 2.7
+        "volume": 285,
+        "share": 10,
+        "fcr": 80.7,
+        "aht": 278,
+        "esc": 3.5
       },
       "Billing & Payments::Payment Method Issues": {
         "name": "Payment Method Issues",
-        "volume": 137,
-        "share": 5.1,
-        "fcr": 78.8,
-        "aht": 290,
-        "esc": 6.6
+        "volume": 122,
+        "share": 4.3,
+        "fcr": 73.8,
+        "aht": 286,
+        "esc": 7.4
       },
       "Billing & Payments::Payment Failure": {
         "name": "Payment Failure",
-        "volume": 249,
-        "share": 9.2,
-        "fcr": 75.5,
-        "aht": 289,
-        "esc": 5.6
+        "volume": 209,
+        "share": 7.3,
+        "fcr": 76.1,
+        "aht": 280,
+        "esc": 5.7
       },
       "Billing & Payments::Billing Inquiries": {
         "name": "Billing Inquiries",
-        "volume": 286,
-        "share": 10.6,
-        "fcr": 68.5,
-        "aht": 289,
-        "esc": 5.2
+        "volume": 250,
+        "share": 8.8,
+        "fcr": 77.6,
+        "aht": 277,
+        "esc": 8
       },
       "Billing & Payments::Refund Requests": {
         "name": "Refund Requests",
-        "volume": 778,
-        "share": 28.9,
-        "fcr": 48.2,
-        "aht": 480,
-        "esc": 15.9
+        "volume": 932,
+        "share": 32.7,
+        "fcr": 51.9,
+        "aht": 461,
+        "esc": 9.7
       },
       "Billing & Payments::Reimbursements": {
         "name": "Reimbursements",
-        "volume": 105,
-        "share": 3.9,
-        "fcr": 74.3,
-        "aht": 289,
-        "esc": 9.5
+        "volume": 81,
+        "share": 2.8,
+        "fcr": 76.5,
+        "aht": 281,
+        "esc": 3.7
       },
       "Billing & Payments::Promotions & Discounts": {
         "name": "Promotions & Discounts",
-        "volume": 67,
-        "share": 2.5,
-        "fcr": 76.1,
-        "aht": 292,
-        "esc": 4.5
+        "volume": 58,
+        "share": 2,
+        "fcr": 75.9,
+        "aht": 281,
+        "esc": 1.7
       },
       "Billing & Payments::Reimbursements & Adjustments": {
         "name": "Reimbursements & Adjustments",
-        "volume": 44,
-        "share": 1.6,
-        "fcr": 81.8,
-        "aht": 294,
-        "esc": 6.8
+        "volume": 149,
+        "share": 5.2,
+        "fcr": 39.6,
+        "aht": 312,
+        "esc": 73.8
       },
       "Orders & Transactions::Preorders & Backorders": {
         "name": "Preorders & Backorders",
-        "volume": 110,
-        "share": 3.6,
-        "fcr": 80.9,
-        "aht": 289,
-        "esc": 5.5
+        "volume": 100,
+        "share": 3.1,
+        "fcr": 79,
+        "aht": 278,
+        "esc": 8
       },
       "Orders & Transactions::Duplicate Orders": {
         "name": "Duplicate Orders",
-        "volume": 159,
-        "share": 5.3,
-        "fcr": 79.2,
-        "aht": 287,
-        "esc": 5
+        "volume": 158,
+        "share": 4.9,
+        "fcr": 72.8,
+        "aht": 276,
+        "esc": 7.6
       },
       "Orders & Transactions::Order Status": {
         "name": "Order Status",
-        "volume": 332,
-        "share": 11,
-        "fcr": 74.7,
-        "aht": 290,
-        "esc": 7.8
+        "volume": 451,
+        "share": 14.1,
+        "fcr": 76.5,
+        "aht": 278,
+        "esc": 4.2
       },
       "Orders & Transactions::Order Placement": {
         "name": "Order Placement",
-        "volume": 227,
-        "share": 7.5,
-        "fcr": 74.9,
-        "aht": 291,
-        "esc": 7
+        "volume": 182,
+        "share": 5.7,
+        "fcr": 68.1,
+        "aht": 279,
+        "esc": 6.6
       },
       "Orders & Transactions::Order Cancellations": {
         "name": "Order Cancellations",
-        "volume": 250,
-        "share": 8.3,
-        "fcr": 72.8,
-        "aht": 290,
-        "esc": 4
+        "volume": 231,
+        "share": 7.2,
+        "fcr": 74.9,
+        "aht": 279,
+        "esc": 6.5
       },
       "Orders & Transactions::Order Issues": {
         "name": "Order Issues",
-        "volume": 551,
-        "share": 18.2,
-        "fcr": 47.4,
-        "aht": 483,
-        "esc": 17.8
+        "volume": 549,
+        "share": 17.1,
+        "fcr": 50.1,
+        "aht": 462,
+        "esc": 13.1
       },
       "Orders & Transactions::Order Management": {
         "name": "Order Management",
-        "volume": 77,
-        "share": 2.5,
-        "fcr": 74,
-        "aht": 289,
-        "esc": 7.8
+        "volume": 234,
+        "share": 7.3,
+        "fcr": 81.2,
+        "aht": 281,
+        "esc": 1.3
       },
       "Orders & Transactions::Order Modifications": {
         "name": "Order Modifications",
-        "volume": 189,
-        "share": 6.2,
-        "fcr": 77.2,
-        "aht": 290,
-        "esc": 4.8
+        "volume": 179,
+        "share": 5.6,
+        "fcr": 76.5,
+        "aht": 278,
+        "esc": 8.9
       },
       "Orders & Transactions::Returns & Exchanges": {
         "name": "Returns & Exchanges",
-        "volume": 1130,
-        "share": 37.4,
-        "fcr": 45.3,
-        "aht": 477,
-        "esc": 16.5
+        "volume": 1123,
+        "share": 35,
+        "fcr": 49.3,
+        "aht": 453,
+        "esc": 20.7
       },
       "Service Delivery::Address Issues": {
         "name": "Address Issues",
-        "volume": 312,
-        "share": 18.4,
-        "fcr": 71.5,
-        "aht": 348,
-        "esc": 6.1
+        "volume": 286,
+        "share": 17.1,
+        "fcr": 69.6,
+        "aht": 335,
+        "esc": 5.9
       },
       "Service Delivery::Courier/Driver Issues": {
         "name": "Courier/Driver Issues",
-        "volume": 199,
-        "share": 11.7,
-        "fcr": 69.8,
-        "aht": 349,
-        "esc": 4.5
+        "volume": 173,
+        "share": 10.4,
+        "fcr": 64.7,
+        "aht": 333,
+        "esc": 4.6
       },
       "Service Delivery::Delivery Failures": {
         "name": "Delivery Failures",
-        "volume": 374,
-        "share": 22,
-        "fcr": 69,
-        "aht": 348,
-        "esc": 6.4
+        "volume": 324,
+        "share": 19.4,
+        "fcr": 71,
+        "aht": 335,
+        "esc": 4.3
       },
       "Service Delivery::Escalations & Approvals": {
         "name": "Escalations & Approvals",
-        "volume": 164,
-        "share": 9.6,
-        "fcr": 62.8,
-        "aht": 350,
-        "esc": 4.9
+        "volume": 154,
+        "share": 9.2,
+        "fcr": 66.2,
+        "aht": 337,
+        "esc": 5.8
       },
       "Service Delivery::Merchant Communication": {
         "name": "Merchant Communication",
-        "volume": 169,
-        "share": 9.9,
-        "fcr": 67.5,
-        "aht": 351,
-        "esc": 8.9
+        "volume": 133,
+        "share": 8,
+        "fcr": 72.2,
+        "aht": 335,
+        "esc": 6
       },
       "Service Delivery::Shipping & Delivery": {
         "name": "Shipping & Delivery",
-        "volume": 482,
-        "share": 28.4,
-        "fcr": 67.8,
-        "aht": 348,
-        "esc": 4.8
+        "volume": 601,
+        "share": 36,
+        "fcr": 69.9,
+        "aht": 335,
+        "esc": 2.8
       },
       "Product Support::Missing/Incorrect Information": {
         "name": "Missing/Incorrect Information",
-        "volume": 374,
-        "share": 44.4,
-        "fcr": 79.4,
-        "aht": 290,
-        "esc": 6.1
+        "volume": 322,
+        "share": 45.5,
+        "fcr": 72.4,
+        "aht": 279,
+        "esc": 5.9
       },
       "Product Support::Product Support": {
         "name": "Product Support",
-        "volume": 468,
-        "share": 55.6,
-        "fcr": 74.6,
-        "aht": 289,
-        "esc": 4.9
+        "volume": 386,
+        "share": 54.5,
+        "fcr": 73.8,
+        "aht": 279,
+        "esc": 6.7
       },
       "General Support::Complaints": {
         "name": "Complaints",
-        "volume": 157,
-        "share": 20.7,
-        "fcr": 17.2,
-        "aht": 292,
-        "esc": 5.7
+        "volume": 123,
+        "share": 18.2,
+        "fcr": 2.4,
+        "aht": 276,
+        "esc": 4.9
       },
       "General Support::Feedback": {
         "name": "Feedback",
-        "volume": 82,
-        "share": 10.8,
-        "fcr": 20.7,
-        "aht": 299,
-        "esc": 3.7
+        "volume": 86,
+        "share": 12.7,
+        "fcr": 1.2,
+        "aht": 279,
+        "esc": 3.5
       },
       "General Support::Follow-up Calls": {
         "name": "Follow-up Calls",
-        "volume": 155,
-        "share": 20.4,
-        "fcr": 23.9,
-        "aht": 287,
-        "esc": 7.7
+        "volume": 156,
+        "share": 23,
+        "fcr": 5.1,
+        "aht": 283,
+        "esc": 5.1
       },
       "General Support::Escalations": {
         "name": "Escalations",
-        "volume": 141,
-        "share": 18.6,
-        "fcr": 22.7,
-        "aht": 284,
-        "esc": 5
+        "volume": 107,
+        "share": 15.8,
+        "fcr": 7.5,
+        "aht": 276,
+        "esc": 8.4
       },
       "General Support::Policy Clarification": {
         "name": "Policy Clarification",
-        "volume": 223,
-        "share": 29.4,
-        "fcr": 20.2,
-        "aht": 290,
+        "volume": 205,
+        "share": 30.3,
+        "fcr": 3.9,
+        "aht": 279,
         "esc": 5.4
       }
     }

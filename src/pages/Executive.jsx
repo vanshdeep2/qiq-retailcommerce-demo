@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useCallback, useEffect, useMemo, useState } from 'react'
 import Nav from '../components/Nav'
 import FlowBar from '../components/FlowBar'
@@ -14,12 +15,15 @@ import {
   ACTUAL_AHT,
   CALLS_PILL,
   CROSS_KPI_PATTERNS,
+  CSAT,
   DEFAULTS,
   ER_TARGET,
   ESC_RATE,
+  FCR,
   LIVE_LABEL,
   RCR_RATE,
   RCR_TARGET,
+  SOURCE_KPIS,
   TR_RATE,
   TR_TARGET,
   TREND,
@@ -40,6 +44,13 @@ import {
   formatVariancePct,
   fmtUSDK,
 } from '../utils/format'
+import {
+  SOURCE_FILTERS,
+  aggregateSourcePerformance,
+  buildSourceRowInsight,
+  formatSourceTime,
+  sourcePerformanceFromDerived,
+} from '../utils/sourceMetrics'
 import '../styles/executive.css'
 
 const fmtPct = (v) => `${parseFloat(v.toFixed(1))}%`
@@ -100,6 +111,7 @@ export default function Executive() {
   const [insightMetric, setInsightMetric] = useState(null)
   const [insightOverrides, setInsightOverrides] = useState(null)
   const [driverCategory, setDriverCategory] = useState(null)
+  const [driverSourceTab, setDriverSourceTab] = useState('voice_human')
   const [calls, setCalls] = useState([])
   const [settingsOpen, setSettingsOpen] = useState(false)
   const [showAllSnapshotMetrics, setShowAllSnapshotMetrics] = useState(false)
@@ -116,10 +128,18 @@ export default function Executive() {
       .catch(() => setCalls([]))
   }, [])
 
-  const l1Drivers = useMemo(() => aggregateDriversByL1(calls), [calls])
+  const sourceFilteredCalls = useMemo(
+    () => (driverSourceTab === 'all' ? calls : calls.filter((call) => call.source === driverSourceTab)),
+    [calls, driverSourceTab],
+  )
+  const l1Drivers = useMemo(() => aggregateDriversByL1(sourceFilteredCalls), [sourceFilteredCalls])
   const l2Drivers = useMemo(
-    () => (driverCategory ? aggregateDriversByL2(calls, driverCategory) : []),
-    [calls, driverCategory],
+    () => (driverCategory ? aggregateDriversByL2(sourceFilteredCalls, driverCategory) : []),
+    [sourceFilteredCalls, driverCategory],
+  )
+  const sourceRows = useMemo(
+    () => (calls.length ? aggregateSourcePerformance(calls) : sourcePerformanceFromDerived(SOURCE_KPIS)),
+    [calls],
   )
 
   const financials = useMemo(() => computeFinancials(DEFAULTS), [])
@@ -168,6 +188,11 @@ export default function Executive() {
 
   const maxVol = Math.max(...(l1Drivers.map((r) => r.volume)), 1)
   const ahtVarianceDir = financials.variancePct >= 0 ? 'up' : 'down'
+  const showDriverAht = driverSourceTab !== 'email_sienna'
+
+  const openSourceRow = (row) => {
+    openInsight('ccm-source-performance', buildSourceRowInsight(row))
+  }
 
   return (
     <>
@@ -198,11 +223,11 @@ export default function Executive() {
                 <strong>Impact (W6–W8):</strong> Returns FCR rose 22 points, CSAT partially recovered, repeat contacts dropped, and critical failures fell from 387 (W1–W4) to 118 (W6–W8).
               </p>
             </div>
-            <p className="hero-wow">Period actuals: CSAT 3.6 (target 4.2) · FCR 61% (target 78%) · RCR 23% (target &lt;12%) · {fmtUSDK(ltv.totalRisk)} revenue at risk</p>
+            <p className="hero-wow">Period actuals: CSAT {CSAT.toFixed(1)} (target 4.2) · FCR {FCR.toFixed(0)}% (target 78%) · RCR 23% (target &lt;12%) · {fmtUSDK(ltv.totalRisk)} revenue at risk</p>
             <div className="hero-chips">
               <button type="button" className="hero-chip chip-red clickable-card" onClick={() => setInsightMetric('exec-chip-csat')}>
                 <span className="chip-dot" style={{ background: '#fca5a5' }} />
-                CSAT 3.6 · 18% of contacts below 3 · retention risk
+                CSAT {CSAT.toFixed(1)} · 18% of contacts below 3 · retention risk
               </button>
               <button type="button" className="hero-chip chip-amber clickable-card" onClick={() => setInsightMetric('exec-chip-returns')}>
                 <span className="chip-dot" style={{ background: '#fbbf24' }} />
@@ -307,7 +332,7 @@ export default function Executive() {
           </KPITile>
           <KPITile
             label="FCR · 8-week"
-            value="61%"
+            value={`${FCR.toFixed(0)}%`}
             target="Target: 78%"
             changeText="↓ -17pts vs target · recovering W6–W8"
             colour="red"
@@ -319,7 +344,7 @@ export default function Executive() {
             <>
               <KPITile
                 label="CSAT · 8-week"
-                value="3.60"
+                value={CSAT.toFixed(2)}
                 target="Target: 4.2"
                 changeText="↓ Returns drivers dragging average down"
                 colour="amber"
@@ -368,9 +393,22 @@ export default function Executive() {
         />
 
         <div className="connector">What is driving this.</div>
+        <p className="connector-sub">Contact Drivers</p>
         <div className="driving-panel">
           <div className="driving-tab-bar">
-            <span className="driving-tab">Contact drivers</span>
+            {SOURCE_FILTERS.filter((tab) => tab.id !== 'all').map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                className={`driving-tab driving-tab-button${driverSourceTab === tab.id ? ' driving-tab-active' : ''}`}
+                onClick={() => {
+                  setDriverSourceTab(tab.id)
+                  setDriverCategory(null)
+                }}
+              >
+                {tab.label}
+              </button>
+            ))}
           </div>
           <div className="drivers-table-wrap">
             <table className="drivers-table">
@@ -417,7 +455,9 @@ export default function Executive() {
                       </td>
                       <td>{row.share}%</td>
                       <td className={fcrClass(row.fcr)}>{row.fcr}%</td>
-                      <td className={row.aht > 480 ? 'aht-bad' : 'aht-ok'}>{formatAht(row.aht)}</td>
+                      <td className={showDriverAht && row.aht > 480 ? 'aht-bad' : 'aht-ok'}>
+                        {showDriverAht ? formatAht(row.aht) : 'n/a'}
+                      </td>
                       <td>
                         <span className={`signal-badge ${sig.cls}`}>{sig.label}</span>
                       </td>
@@ -444,6 +484,53 @@ export default function Executive() {
               ))}
             </div>
           </div>
+        </div>
+
+        <div className="connector">Channel &amp; Source Performance</div>
+        <p className="connector-sub">Performance calibration by human channel and Sienna AI email source.</p>
+        <div className="drivers-table-wrap source-performance-wrap">
+          <table className="drivers-table source-performance-table">
+            <thead>
+              <tr>
+                <th>Source</th>
+                <th>Volume</th>
+                <th>CSAT</th>
+                <th>FCR</th>
+                <th>Repeat Contact Rate</th>
+                <th>Avg Handle/Response Time</th>
+                <th>Escalation to Human</th>
+              </tr>
+            </thead>
+            <tbody>
+              {sourceRows.map((row) => (
+                <tr
+                  key={row.source}
+                  className="source-performance-row"
+                  onClick={() => openSourceRow(row)}
+                  onKeyDown={(e) => {
+                    if (e.key === 'Enter' || e.key === ' ') {
+                      e.preventDefault()
+                      openSourceRow(row)
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                >
+                  <td className="subcat-name">
+                    {row.label}
+                    {row.source === 'email_sienna' && <span className="badge badge-ai">AI</span>}
+                    <span className="driver-drill-hint">View source detail →</span>
+                  </td>
+                  <td>{row.volume.toLocaleString()}</td>
+                  <td>{row.csat.toFixed(2)}</td>
+                  <td>{row.fcr.toFixed(1)}%</td>
+                  <td>{row.rcr.toFixed(1)}%</td>
+                  <td>{formatSourceTime(row)}</td>
+                  <td>{row.escalationToHuman == null ? 'n/a' : `${row.escalationToHuman.toFixed(1)}%`}</td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
         </div>
 
         <div className="connector">Actions.</div>
@@ -531,6 +618,7 @@ export default function Executive() {
         onClose={() => setDriverCategory(null)}
         category={driverCategory}
         l2Rows={l2Drivers}
+        showAht={showDriverAht}
       />
 
       <MetricInsightDrawer

@@ -3,7 +3,7 @@ import { driverSignal, fcrClass } from '../utils/drivers'
 import { formatAht } from '../utils/format'
 import '../styles/executive.css'
 
-export default function DriverDrilldownDrawer({ open, onClose, category, l2Rows }) {
+export default function DriverDrilldownDrawer({ open, onClose, category, l2Rows, showAht = true }) {
   if (!category) return null
 
   const maxVol = Math.max(...(l2Rows.map((r) => r.volume)), 1)
@@ -47,7 +47,9 @@ export default function DriverDrilldownDrawer({ open, onClose, category, l2Rows 
                   </td>
                   <td>{row.share}%</td>
                   <td className={fcrClass(row.fcr)}>{row.fcr}%</td>
-                  <td className={row.aht > 480 ? 'aht-bad' : 'aht-ok'}>{formatAht(row.aht)}</td>
+                  <td className={showAht && row.aht > 480 ? 'aht-bad' : 'aht-ok'}>
+                    {showAht ? formatAht(row.aht) : 'n/a'}
+                  </td>
                   <td>
                     <span className={`signal-badge ${sig.cls}`}>{sig.label}</span>
                   </td>

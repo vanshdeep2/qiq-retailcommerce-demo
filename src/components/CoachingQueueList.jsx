@@ -1,3 +1,4 @@
+/* eslint-disable react-hooks/set-state-in-effect */
 import { useEffect, useMemo, useState } from 'react'
 import { buildCoachingQueue } from '../utils/coachingQueue'
 import { formatDate } from '../utils/format'
