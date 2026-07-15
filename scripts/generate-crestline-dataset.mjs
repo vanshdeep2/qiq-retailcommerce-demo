@@ -72,6 +72,7 @@ const SIMPLE_SIENNA_DRIVERS = [
   { l1: 'Billing & Payments', l2: 'Invoice Requests' },
   { l1: 'Orders & Transactions', l2: 'Order Management' },
 ]
+const SIMPLE_SIENNA_DRIVER_WEIGHTS = [0.28, 0.24, 0.2, 0.16, 0.12]
 const COMPLEX_SIENNA_DRIVERS = [
   { l1: 'Orders & Transactions', l2: 'Returns & Exchanges' },
   { l1: 'Billing & Payments', l2: 'Reimbursements & Adjustments' },
@@ -171,9 +172,13 @@ function sourceLabel(source) {
   return {
     voice_human: 'Voice (Human)',
     email_human: 'Email (Human)',
-    email_sienna: 'Email (Sienna AI)',
+    email_sienna: 'Email (AI Agent)',
     chat_human: 'Chat (Human)',
   }[source] || source
+}
+
+function pickAiResolvedDriver() {
+  return pickWeighted(SIMPLE_SIENNA_DRIVERS, SIMPLE_SIENNA_DRIVER_WEIGHTS)
 }
 
 function formatResponseTime(minutes) {
@@ -885,13 +890,13 @@ function makeSiennaEmailThread(record, escalated, followUpId) {
 
   const thread = [
     { from: 'customer', subject: `${driver} for ${order}`, body: customerBody },
-    { from: 'sienna', body: `Hello ${record.merchant_name.split(' ')[0]},\n\n${resolutionCopy[driver]}\n\nBest,\nSienna\nCrestline AI Email Support` },
+    { from: 'sienna', body: `Hello ${record.merchant_name.split(' ')[0]},\n\n${resolutionCopy[driver]}\n\nBest,\nAI Agent\nCrestline AI Email Support` },
   ]
 
   if (escalated) {
     thread.push({
       from: 'handoff',
-      body: `Handoff note: Sienna identified policy judgment required on ${driver}. Routed to human email contact ${followUpId} with customer, order, and driver context attached.`,
+      body: `Handoff note: AI Agent identified policy judgment required on ${driver}. Routed to human email contact ${followUpId} with customer, order, and driver context attached.`,
     })
     thread.push({
       from: 'human_follow_up',
@@ -904,7 +909,7 @@ function makeSiennaEmailThread(record, escalated, followUpId) {
 
 function renderEmailThread(thread) {
   return thread.map((item) => {
-    const speaker = item.from === 'customer' ? 'Customer' : item.from === 'sienna' ? 'Sienna' : item.from === 'handoff' ? 'Handoff' : 'Human Follow-up'
+    const speaker = item.from === 'customer' ? 'Customer' : item.from === 'sienna' ? 'AI Agent' : item.from === 'handoff' ? 'Handoff' : 'Human Follow-up'
     const subject = item.subject ? `Subject: ${item.subject}\n` : ''
     return `${speaker}: ${subject}${item.body}`
   }).join('\n\n')
@@ -941,7 +946,7 @@ function sanitizeSiennaRecord(record, driver, escalated, followUpId) {
   record.qa_score = null
   record.qa_pass = null
   record.auto_fail_reasons = []
-  record.key_strengths = escalated ? [] : ['Sienna resolved a routine email with structured order context.']
+  record.key_strengths = escalated ? [] : ['AI Agent resolved a routine email with structured order context.']
   record.key_gaps = escalated ? ['Policy judgment required human escalation.'] : []
   record.questions_met = 0
   record.questions_not_met = 0
@@ -952,8 +957,8 @@ function sanitizeSiennaRecord(record, driver, escalated, followUpId) {
   updateCsat(record, escalated ? 3.1 + rand() * 0.4 : 3.8 + rand() * 0.4)
   record.email_thread = makeSiennaEmailThread(record, escalated, followUpId)
   record.transcript = renderEmailThread(record.email_thread)
-  record.narrative_summary = `Sienna AI email contact regarding order ${record.order_number} (${record.driver_subcategory}). `
-    + (escalated ? `Escalated to human follow-up ${followUpId} because policy judgment was required.` : 'Resolved automatically by Sienna.')
+  record.narrative_summary = `AI Agent email contact regarding order ${record.order_number} (${record.driver_subcategory}). `
+    + (escalated ? `Escalated to human follow-up ${followUpId} because policy judgment was required.` : 'Resolved automatically by AI Agent.')
 }
 
 function convertFollowUpRecord(record, siennaRecord) {
@@ -986,7 +991,7 @@ function convertFollowUpRecord(record, siennaRecord) {
     fcr: record.fcr_resolved,
     escalated: record.escalated,
   })
-  record.narrative_summary = `Human email follow-up for Sienna escalation ${siennaRecord.call_id}; same customer and ${record.driver_subcategory} driver. `
+  record.narrative_summary = `Human email follow-up for AI Agent escalation ${siennaRecord.call_id}; same customer and ${record.driver_subcategory} driver. `
     + (record.fcr_resolved ? 'Human agent resolved the policy exception.' : 'Human follow-up remains complex and may need another action.')
 }
 
@@ -1015,8 +1020,8 @@ function assignSources(records) {
     convertFollowUpRecord(followUp, r)
   })
 
-  resolvedSienna.forEach(({ r }, idx) => {
-    sanitizeSiennaRecord(r, SIMPLE_SIENNA_DRIVERS[idx % SIMPLE_SIENNA_DRIVERS.length], false, null)
+  resolvedSienna.forEach(({ r }) => {
+    sanitizeSiennaRecord(r, pickAiResolvedDriver(), false, null)
   })
 
   const remainingSourceCounts = {

@@ -48,7 +48,7 @@ export const DEFAULT_FILTERS = {
 export const SOURCE_LABELS = {
   voice_human: 'Voice',
   email_human: 'Email - Human',
-  email_sienna: 'Email - Sienna',
+  email_sienna: 'Email - AI Agent',
   chat_human: 'Chat',
 }
 
@@ -56,7 +56,7 @@ export const SOURCE_OPTIONS = [
   { value: 'all', label: 'All sources' },
   { value: 'voice_human', label: 'Voice' },
   { value: 'email_human', label: 'Email - Human' },
-  { value: 'email_sienna', label: 'Email - Sienna' },
+  { value: 'email_sienna', label: 'Email - AI Agent' },
   { value: 'chat_human', label: 'Chat' },
 ]
 

@@ -487,7 +487,7 @@ export default function Executive() {
         </div>
 
         <div className="connector">Channel &amp; Source Performance</div>
-        <p className="connector-sub">Performance calibration by human channel and Sienna AI email source.</p>
+        <p className="connector-sub">Performance calibration by human channel and AI Agent email source.</p>
         <div className="drivers-table-wrap source-performance-wrap">
           <table className="drivers-table source-performance-table">
             <thead>

@@ -41,7 +41,7 @@ function SummaryTab({ call, linkedCall, onOpenLinkedCall }) {
             className="detail-linked-call-btn"
             onClick={() => onOpenLinkedCall?.(linkedCall.call_id)}
           >
-            {call.escalated_to_human ? 'Open human follow-up' : 'Open Sienna handoff'} · {linkedCall.call_id}
+            {call.escalated_to_human ? 'Open human follow-up' : 'Open AI Agent handoff'} · {linkedCall.call_id}
           </button>
         )}
       </div>
@@ -245,7 +245,7 @@ function EmailThreadTab({ call, linkedCall, onOpenLinkedCall }) {
         {thread.map((item, i) => (
           <div key={`${item.from}-${i}`} className={`email-thread-message email-thread-${item.from}`}>
             <div className="email-thread-meta">
-              {item.from === 'customer' ? 'Customer email' : item.from === 'sienna' ? 'Sienna automated response' : item.from === 'handoff' ? 'Handoff note' : 'Human follow-up'}
+              {item.from === 'customer' ? 'Customer email' : item.from === 'sienna' ? 'AI Agent response' : item.from === 'handoff' ? 'Handoff note' : 'Human follow-up'}
             </div>
             {item.subject && <div className="email-thread-subject">{item.subject}</div>}
             <p>{item.body}</p>
@@ -311,7 +311,7 @@ export default function CallDetailPanel({ call, activeTab, setActiveTab, linkedC
           <div>
             <div className="detail-call-id">{call.call_id}</div>
             <div className="detail-call-meta">
-              {call.merchant_name} · Order {call.merchant_contact} · {call.agent_name || 'Sienna AI'} · {call.call_date} · {call.call_category} · {call.call_subcategory}
+              {call.merchant_name} · Order {call.merchant_contact} · {call.agent_name || 'AI Agent'} · {call.call_date} · {call.call_category} · {call.call_subcategory}
             </div>
           </div>
         </div>

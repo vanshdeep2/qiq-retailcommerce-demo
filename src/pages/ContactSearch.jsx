@@ -359,7 +359,7 @@ export default function ContactSearch() {
                         onClick={() => openCall(call.call_id)}
                       >
                         <td>{call.call_id}</td>
-                        <td>{call.agent_name || 'Sienna AI'}</td>
+                        <td>{call.agent_name || 'AI Agent'}</td>
                         <td>
                           <span className={`source-pill${call.source === 'email_sienna' ? ' source-pill-ai' : ''}`}>
                             {formatSourceDisplay(call.source)}

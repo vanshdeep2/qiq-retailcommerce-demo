@@ -201,7 +201,7 @@ export default function CCM() {
         </div>
 
         <div className="connector" id="channel-source-performance">Channel &amp; Source Performance</div>
-        <p className="section-sublabel">Performance calibration by human channel and Sienna AI email source</p>
+        <p className="section-sublabel">Performance calibration by human channel and AI Agent email source</p>
         <div className="drivers-table-wrap queue-comparison-wrap">
           <table className="drivers-table queue-comparison-table source-performance-table">
             <thead>
@@ -254,18 +254,18 @@ export default function CCM() {
             onClick={() => openInsight('ccm-sienna-channel-insight')}
           >
             <div className="pattern-top">
-              <div className="pattern-title">Sienna Email Routing Insight</div>
+              <div className="pattern-title">AI Email Handover Insight</div>
               <span className="pattern-level">Analyst insight</span>
             </div>
             <div className="pattern-body">
-              Sienna resolves routine email contacts at 71% FCR with a median response time of 8 minutes, outperforming human email handling on Order Status, Refund Requests, and Shipping &amp; Delivery drivers. 12% of Sienna contacts escalate to human agents; these are concentrated in Returns &amp; Exchanges and Reimbursements &amp; Adjustments, where policy judgment is required. Human email FCR on these complex drivers is unaffected by Sienna routing.
+              The AI Agent resolves routine email contacts at 71% FCR with a median response time of 8 minutes, but hands 12% of contacts to human agents when policy judgment, refund-amount authority, or multi-step case review is required. Handoffs concentrate in Returns &amp; Exchanges and Reimbursements &amp; Adjustments.
             </div>
             <div className="ckp-drill">Details →</div>
           </button>
           <NBACard
             number="Next Best Action"
-            title="Route routine status emails to Sienna"
-            detail="Route all Order Status, Refund Status, and Shipping & Delivery emails to Sienna by default. Projected impact: approximately 280 human email contacts per week redirected, freeing an estimated 19 human agent hours weekly for complex contact handling."
+            title="Route routine status emails to AI Agent"
+            detail="Route all Order Status, Refund Status, and Shipping & Delivery emails to the AI Agent by default. Projected impact: approximately 280 human email contacts per week redirected, freeing an estimated 19 human agent hours weekly for complex contact handling."
             kpis={['Email FCR', 'Response Time', 'Human Capacity']}
             impact="~19 hrs/week freed"
             onClick={() => openInsight('ccm-sienna-nba')}

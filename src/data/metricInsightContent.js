@@ -31,10 +31,15 @@ const VARIANT_DEFAULTS = {
   showCoachingMarker: false,
 }
 
-const siennaDriverVolume = (driverName) => {
+const aiDriverVolume = (driverName) => {
   const driver = SOURCE_KPIS.email_sienna.topDrivers.find((item) => item.name === driverName)
-  return driver ? `${driver.volume.toLocaleString()} Sienna contacts` : 'Sienna routing target'
+  return driver ? `${driver.volume.toLocaleString()} AI Agent contacts` : 'AI Agent routing target'
 }
+
+const aiHandoffVolume = Math.round(
+  (SOURCE_KPIS.email_sienna.volume * SOURCE_KPIS.email_sienna.escalationToHuman) / 100,
+)
+const aiComplexDriverVolume = Math.round(aiHandoffVolume / 2)
 
 export const METRIC_INSIGHTS = {
   'ccm-source-performance': {
@@ -48,38 +53,38 @@ export const METRIC_INSIGHTS = {
     contributors: [],
   },
   'ccm-sienna-channel-insight': {
-    title: 'Sienna Email Routing Insight',
-    subtitle: 'Routine email automation with controlled human escalation',
-    rootCause: 'Sienna resolves routine email contacts at 71% FCR with a median response time of 8 minutes, outperforming human email handling on Order Status, Refund Requests, and Shipping & Delivery drivers. 12% of Sienna contacts escalate to human agents; these are concentrated in Returns & Exchanges and Reimbursements & Adjustments, where policy judgment is required. Human email FCR on these complex drivers is unaffected by Sienna routing.',
+    title: 'AI Email Handover Insight',
+    subtitle: 'Human handoffs concentrate where policy judgment is required',
+    rootCause: 'The AI Agent resolves routine email contacts at 71% FCR with a median response time of 8 minutes, but hands 12% of contacts to human agents when the customer needs policy judgment, refund-amount authority, or multi-step case review. Handoffs concentrate in Returns & Exchanges and Reimbursements & Adjustments, while routine Order Status, Refund Requests, and Shipping & Delivery contacts remain strong AI-resolution candidates.',
     trendLabels: WK_LABELS,
-    trendData: CCM_TREND.csat,
+    trendData: SOURCE_KPIS.email_sienna.weekly.csat,
     trendColor: '#2563eb',
     formatTrend: fmtCsat,
-    contributorsLabel: 'Routing evidence',
+    contributorsLabel: 'Handover reasons',
     contributors: [
-      { name: 'Routine drivers', detail: 'Order Status, Refund Requests, Shipping & Delivery outperform human email' },
-      { name: 'Escalation drivers', detail: 'Returns & Exchanges and Reimbursements & Adjustments require policy judgment' },
-      { name: 'Human email', detail: 'Complex-driver FCR remains unaffected by Sienna routing' },
+      { name: 'Policy judgment', detail: `${aiComplexDriverVolume.toLocaleString()} Returns & Exchanges contacts handed to human specialists` },
+      { name: 'Refund amount authority', detail: `${aiComplexDriverVolume.toLocaleString()} Reimbursements & Adjustments contacts handed to human specialists` },
+      { name: 'Multi-step case review', detail: `${aiHandoffVolume.toLocaleString()} total AI Agent handoffs include customer, order, and driver context` },
     ],
   },
   'ccm-sienna-nba': {
-    title: 'Route Routine Status Emails to Sienna',
+    title: 'Route Routine Status Emails to AI Agent',
     subtitle: 'Next Best Action · Email routing policy',
     value: '~19 hrs/week freed',
     valueClass: 'val-green',
     target: '~280 human email contacts/week redirected',
     delta: 'Capacity unlocked for complex policy work',
     deltaClass: 'chg-green',
-    rootCause: 'Route all Order Status, Refund Status, and Shipping & Delivery emails to Sienna by default. Projected impact: approximately 280 human email contacts per week redirected, freeing an estimated 19 human agent hours weekly for complex contact handling.',
+    rootCause: 'Route all Order Status, Refund Status, and Shipping & Delivery emails to the AI Agent by default. Projected impact: approximately 280 human email contacts per week redirected, freeing an estimated 19 human agent hours weekly for complex contact handling.',
     trendLabels: WK_LABELS,
     trendData: SOURCE_KPIS.email_sienna.weekly.fcr,
     trendColor: '#2563eb',
     formatTrend: fmtPct,
     contributorsLabel: 'Drivers to route by default',
     contributors: [
-      { name: 'Order Status', detail: siennaDriverVolume('Order Status') },
-      { name: 'Refund Status / Refund Requests', detail: siennaDriverVolume('Refund Requests') },
-      { name: 'Shipping & Delivery', detail: siennaDriverVolume('Shipping & Delivery') },
+      { name: 'Order Status', detail: aiDriverVolume('Order Status') },
+      { name: 'Refund Status / Refund Requests', detail: aiDriverVolume('Refund Requests') },
+      { name: 'Shipping & Delivery', detail: aiDriverVolume('Shipping & Delivery') },
     ],
     recommendedAction: 'Keep Returns & Exchanges and Reimbursements & Adjustments routed to human email specialists, because those escalations require policy judgment.',
   },

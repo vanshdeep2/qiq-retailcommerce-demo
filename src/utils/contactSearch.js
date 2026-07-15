@@ -74,8 +74,8 @@ export function sortCalls(calls, sortField, sortDir) {
       return a.call_date > b.call_date ? dir : a.call_date < b.call_date ? -dir : 0
     }
     if (sortField === 'agent_name') {
-      const av = a.agent_name || 'Sienna AI'
-      const bv = b.agent_name || 'Sienna AI'
+      const av = a.agent_name || 'AI Agent'
+      const bv = b.agent_name || 'AI Agent'
       return av > bv ? dir : av < bv ? -dir : 0
     }
     if (sortField === 'call_id') {
