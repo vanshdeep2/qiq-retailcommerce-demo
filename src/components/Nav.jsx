@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
+import UserMenu from './UserMenu'
 import '../styles/components.css'
 
 const MENU_ITEMS = [
@@ -75,6 +76,7 @@ export default function Nav({ currentPage, liveLabel, callsPill, pageTitle, navE
         </span>
         <span className="nav-pill">{callsPill}</span>
         {navExtra}
+        <UserMenu />
       </div>
     </nav>
   )

@@ -18,4 +18,9 @@ export default defineConfig([
       parserOptions: { ecmaFeatures: { jsx: true } },
     },
   },
+  {
+    // Vercel functions and middleware run server-side.
+    files: ['api/**/*.js', 'sso/**/*.js', 'middleware.js'],
+    languageOptions: { globals: globals.node },
+  },
 ])
